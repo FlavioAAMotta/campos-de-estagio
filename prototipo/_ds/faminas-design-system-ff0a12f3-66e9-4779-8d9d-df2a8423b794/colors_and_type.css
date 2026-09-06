@@ -1,0 +1,298 @@
+/* ============================================================================
+   FAMINAS — Centro Universitário · Design System
+   colors_and_type.css — visual foundations (color + type + space + elevation)
+   ----------------------------------------------------------------------------
+   Source of truth: the SIGA / FAMINAS digital products
+     · preceptor-point   ("Clean Medical Palette", the most intentional system)
+     · profs-faminas     (Planilha Interativa de Docentes)
+     · discentes_faminas (Mapa Interativo de Estágios)
+   All three are shadcn/ui + Tailwind apps that share the institutional palette
+   (--faminas-blue / --faminas-pink / --faminas-light) defined below.
+
+   TYPEFACES (canonical — SELF-HOSTED in fonts/, no external CDN):
+     · Plus Jakarta Sans — display / headings (geometric, friendly, modern)
+     · Public Sans        — body / UI (highly legible, accessible)
+     · JetBrains Mono     — codes / matrículas / IDs
+   These are the official FAMINAS design-system typefaces.
+   ========================================================================== */
+
+/* Self-hosted variable fonts (no external CDN) — the canonical FAMINAS
+   design-system typefaces. */
+@font-face {
+  font-family: 'Plus Jakarta Sans';
+  src: url('fonts/plus-jakarta-sans.woff2') format('woff2');
+  font-weight: 400 800;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Public Sans';
+  src: url('fonts/public-sans.woff2') format('woff2');
+  font-weight: 400 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  src: url('fonts/jetbrains-mono.woff2') format('woff2');
+  font-weight: 400 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  /* ---------------------------------------------------------------------
+     1 · BRAND PALETTE — the three canonical FAMINAS colors
+     (verbatim from the codebase: rgb 45,42,111 / 208,12,100 / 96,151,202)
+     --------------------------------------------------------------------- */
+  --faminas-blue:        #2D2A6F;   /* institutional indigo — the wordmark color   */
+  --faminas-blue-700:    #252263;   /* pressed / deep                              */
+  --faminas-blue-300:    #6B68A6;   /* tints on light surfaces                     */
+  --faminas-pink:        #D00C64;   /* magenta accent — highlights, focus, energy  */
+  --faminas-pink-700:    #B00B55;   /* pressed magenta                             */
+  --faminas-pink-050:    #FCE6F0;   /* very light magenta wash                     */
+  --faminas-light:       #6097CA;   /* light institutional blue — secondary accent */
+  --faminas-light-050:   #EAF1F8;   /* light blue wash                             */
+
+  /* CTA "medical blue" — used sparingly for primary actions (from preceptor-point) */
+  --primary:             #1E40AF;   /* hsl(226 72% 40%) */
+  --primary-hover:       #1B3A9E;
+  --primary-light:       #719CD1;   /* hsl(213 51% 63%) */
+  --primary-foreground:  #FFFFFF;
+
+  /* ---------------------------------------------------------------------
+     2 · NEUTRALS — cool gray scale (slight blue cast, matches foreground)
+     --------------------------------------------------------------------- */
+  --white:   #FFFFFF;
+  --gray-50:  #F7F8FA;   /* app background / muted surfaces */
+  --gray-100: #EFF1F4;
+  --gray-200: #D8DCE3;   /* borders (hsl 220 13% 85%)       */
+  --gray-300: #C2C8D2;
+  --gray-400: #9AA2B1;
+  --gray-500: #6B7385;   /* muted-foreground (hsl 215 15% 45%) */
+  --gray-600: #4D5566;
+  --gray-700: #373E4D;   /* foreground (hsl 215 20% 25%)    */
+  --gray-800: #2A303C;   /* heading    (hsl 215 25% 20%)    */
+  --gray-900: #1B2029;
+
+  /* ---------------------------------------------------------------------
+     3 · SEMANTIC TOKENS  (light theme — matches preceptor-point :root)
+     --------------------------------------------------------------------- */
+  --background:            var(--white);
+  --foreground:            var(--gray-700);
+  --heading:               var(--gray-800);
+  --text-subtle:           var(--gray-500);
+
+  --card:                  var(--white);
+  --card-foreground:       var(--gray-700);
+  --popover:               var(--white);
+
+  --secondary:             #FAFBFC;            /* near-white w/ blue hint */
+  --secondary-foreground:  var(--gray-700);
+  --muted:                 var(--gray-50);
+  --muted-foreground:      var(--gray-500);
+
+  --accent:                var(--faminas-pink);
+  --accent-foreground:     var(--white);
+  --accent-light:          var(--faminas-pink-050);
+
+  --border:                var(--gray-200);
+  --input:                 #F3F4F7;            /* input fill (hsl 220 8% 96%) */
+  --ring:                  var(--primary);
+
+  /* status / feedback */
+  --success:               #1E7F4F;
+  --success-bg:            #E7F4ED;
+  --warning:               #B7791F;
+  --warning-bg:            #FBF1DD;
+  --destructive:           #DC2626;            /* hsl(0 75% 50%) */
+  --destructive-bg:        #FBE9E9;
+  --destructive-foreground:var(--white);
+  --info:                  var(--faminas-light);
+  --info-bg:               var(--faminas-light-050);
+
+  /* chart palette (institutional, in priority order) */
+  --chart-1: var(--faminas-blue);
+  --chart-2: var(--faminas-light);
+  --chart-3: var(--faminas-pink);
+  --chart-4: #E0A33E;
+  --chart-5: #2E9E78;
+
+  /* ---------------------------------------------------------------------
+     4 · GRADIENTS  (derived from brand — used on hero / accent chips)
+     --------------------------------------------------------------------- */
+  --gradient-faminas: linear-gradient(135deg, var(--faminas-blue) 0%, var(--faminas-light) 100%);
+  --gradient-accent:  linear-gradient(135deg, var(--faminas-pink) 0%, #E84B8E 100%);
+  --gradient-subtle:  linear-gradient(135deg, var(--faminas-light-050) 0%, var(--white) 100%);
+
+  /* ---------------------------------------------------------------------
+     5 · RADII  (canonical 8px; --radius from preceptor-point)
+     --------------------------------------------------------------------- */
+  --radius:     0.5rem;                 /* 8px  — cards, inputs, buttons */
+  --radius-sm:  calc(var(--radius) - 4px); /* 4px */
+  --radius-md:  calc(var(--radius) - 2px); /* 6px */
+  --radius-lg:  var(--radius);             /* 8px */
+  --radius-xl:  0.75rem;                 /* 12px — large cards / popovers */
+  --radius-2xl: 1rem;                    /* 16px — hero / feature cards   */
+  --radius-full:9999px;                  /* pills / avatars               */
+
+  /* ---------------------------------------------------------------------
+     6 · ELEVATION  (soft, low-contrast — institutional restraint)
+     --------------------------------------------------------------------- */
+  --shadow-xs: 0 1px 2px rgba(27, 32, 41, 0.04);
+  --shadow-sm: 0 1px 3px rgba(27, 32, 41, 0.08), 0 1px 2px rgba(27, 32, 41, 0.04);
+  --shadow-md: 0 4px 6px -1px rgba(27, 32, 41, 0.08), 0 2px 4px -2px rgba(27, 32, 41, 0.05);
+  --shadow-lg: 0 10px 15px -3px rgba(27, 32, 41, 0.08), 0 4px 6px -4px rgba(27, 32, 41, 0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(27, 32, 41, 0.10), 0 8px 10px -6px rgba(27, 32, 41, 0.05);
+  /* brand-tinted shadow for primary/hero cards */
+  --shadow-faminas: 0 12px 28px -8px rgba(45, 42, 111, 0.28);
+  --shadow-accent:  0 8px 20px -6px rgba(208, 12, 100, 0.35);
+
+  /* ---------------------------------------------------------------------
+     7 · SPACING SCALE  (4px base — Tailwind-aligned)
+     --------------------------------------------------------------------- */
+  --space-0:  0;
+  --space-1:  0.25rem;  /*  4px */
+  --space-2:  0.5rem;   /*  8px */
+  --space-3:  0.75rem;  /* 12px */
+  --space-4:  1rem;     /* 16px */
+  --space-5:  1.25rem;  /* 20px */
+  --space-6:  1.5rem;   /* 24px */
+  --space-8:  2rem;     /* 32px */
+  --space-10: 2.5rem;   /* 40px */
+  --space-12: 3rem;     /* 48px */
+  --space-16: 4rem;     /* 64px */
+  --space-20: 5rem;     /* 80px */
+
+  /* container */
+  --container-max: 1400px;
+  --container-pad: 2rem;
+
+  /* ---------------------------------------------------------------------
+     8 · TYPOGRAPHY
+     --------------------------------------------------------------------- */
+  --font-display: 'Plus Jakarta Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-sans:    'Public Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-mono:    'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+
+  /* type scale (rem) — institutional, generous */
+  --text-xs:   0.75rem;   /* 12px */
+  --text-sm:   0.875rem;  /* 14px */
+  --text-base: 1rem;      /* 16px */
+  --text-lg:   1.125rem;  /* 18px */
+  --text-xl:   1.25rem;   /* 20px */
+  --text-2xl:  1.5rem;    /* 24px */
+  --text-3xl:  1.875rem;  /* 30px */
+  --text-4xl:  2.25rem;   /* 36px */
+  --text-5xl:  3rem;      /* 48px */
+  --text-6xl:  3.75rem;   /* 60px */
+
+  --leading-tight:  1.15;
+  --leading-snug:   1.3;
+  --leading-normal: 1.5;
+  --leading-relaxed:1.65;
+
+  --tracking-tight:  -0.02em;
+  --tracking-normal: 0;
+  --tracking-wide:   0.04em;
+  --tracking-caps:   0.08em;  /* uppercase eyebrows / table headers */
+
+  --weight-regular: 400;
+  --weight-medium:  500;
+  --weight-semibold:600;
+  --weight-bold:    700;
+  --weight-extra:   800;
+}
+
+/* ============================================================================
+   SEMANTIC TYPE ROLES — apply directly or copy into components
+   ========================================================================== */
+.ds-display {
+  font-family: var(--font-display);
+  font-size: var(--text-5xl);
+  font-weight: var(--weight-bold);
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-tight);
+  color: var(--heading);
+}
+h1, .ds-h1 {
+  font-family: var(--font-display);
+  font-size: var(--text-4xl);
+  font-weight: var(--weight-bold);
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-tight);
+  color: var(--heading);
+}
+h2, .ds-h2 {
+  font-family: var(--font-display);
+  font-size: var(--text-3xl);
+  font-weight: var(--weight-bold);
+  line-height: var(--leading-snug);
+  letter-spacing: var(--tracking-tight);
+  color: var(--heading);
+}
+h3, .ds-h3 {
+  font-family: var(--font-display);
+  font-size: var(--text-2xl);
+  font-weight: var(--weight-semibold);
+  line-height: var(--leading-snug);
+  color: var(--heading);
+}
+h4, .ds-h4 {
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  font-weight: var(--weight-semibold);
+  line-height: var(--leading-snug);
+  color: var(--heading);
+}
+.ds-lead {
+  font-family: var(--font-sans);
+  font-size: var(--text-xl);
+  font-weight: var(--weight-regular);
+  line-height: var(--leading-relaxed);
+  color: var(--foreground);
+}
+p, .ds-body {
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  font-weight: var(--weight-regular);
+  line-height: var(--leading-normal);
+  color: var(--foreground);
+}
+.ds-small {
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  line-height: var(--leading-normal);
+  color: var(--foreground);
+}
+.ds-caption {
+  font-family: var(--font-sans);
+  font-size: var(--text-xs);
+  line-height: var(--leading-normal);
+  color: var(--text-subtle);
+}
+/* uppercase eyebrow / stat label / table head */
+.ds-eyebrow {
+  font-family: var(--font-sans);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+  color: var(--text-subtle);
+}
+.ds-mono {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  color: var(--foreground);
+}
+
+/* base reset hooks (optional) */
+.ds-root {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  line-height: var(--leading-normal);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}

@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+  @font-face{font-family:'Plus Jakarta Sans';src:url('fonts/plus-jakarta-sans.woff2') format('woff2');font-weight:400 800;font-display:swap}
+  @font-face{font-family:'Public Sans';src:url('fonts/public-sans.woff2') format('woff2');font-weight:400 700;font-display:swap}
+  @font-face{font-family:'JetBrains Mono';src:url('fonts/jetbrains-mono.woff2') format('woff2');font-weight:400 600;font-display:swap}
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:#F7F8FA;-webkit-font-smoothing:antialiased}
+  a{color:#1E40AF;text-decoration:none}
+  a:hover{color:#D00C64}
+  input,select,button{font-family:'Public Sans',system-ui,sans-serif}
+  input:focus,select:focus{outline:2px solid #1E40AF;outline-offset:1px}
+</style>
+</helmet>
+
+<sc-if value="{{ isLogin }}" hint-placeholder-val="{{ true }}">
+<div style="min-height:100vh;display:grid;grid-template-columns:1.05fr 1fr;font-family:'Public Sans',system-ui,sans-serif">
+  <div style="background:linear-gradient(135deg,#2D2A6F 0%,#6097CA 100%);padding:64px 56px;display:flex;flex-direction:column;justify-content:space-between;color:#fff">
+    <img src="assets/logo-faminas-white.png" alt="FAMINAS" style="height:34px;width:auto;object-fit:contain;align-self:flex-start" />
+    <div style="display:flex;flex-direction:column;gap:20px;max-width:440px">
+      <div style="font-family:'Public Sans';font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.72)">Coordenação de Medicina</div>
+      <h1 style="font-family:'Plus Jakarta Sans';font-size:40px;font-weight:700;line-height:1.15;letter-spacing:-0.02em;color:#fff;margin:0">Gestão de Campos de Estágio</h1>
+      <p style="font-size:16px;line-height:1.65;color:rgba(255,255,255,.82);margin:0;text-wrap:pretty">Qualificação de campos e preceptores, registro central de contratos e vínculos, painel de indicadores e simulação de cenários de contratação.</p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px">
+        <span style="font-family:'JetBrains Mono';font-size:11px;padding:5px 10px;border-radius:9999px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.22);color:#fff">Módulo 1 · Qualificação</span>
+        <span style="font-family:'JetBrains Mono';font-size:11px;padding:5px 10px;border-radius:9999px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.22);color:#fff">Módulo 2 · Gerenciamento</span>
+      </div>
+    </div>
+    <div style="font-size:12px;color:rgba(255,255,255,.6)">Estrutura de front-end base · Desenvolvimento de APIs 2026/2</div>
+  </div>
+
+  <div style="display:flex;align-items:center;justify-content:center;padding:48px;background:#fff">
+    <div style="width:100%;max-width:380px;display:flex;flex-direction:column;gap:22px">
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <h2 style="font-family:'Plus Jakarta Sans';font-size:26px;font-weight:700;letter-spacing:-0.02em;color:#2A303C;margin:0">Entrar na Plataforma</h2>
+        <p style="font-size:14px;color:#6B7385;margin:0">Acesse com suas credenciais institucionais.</p>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <label style="display:flex;flex-direction:column;gap:6px">
+          <span style="font-size:13px;font-weight:600;color:#373E4D">E-mail institucional</span>
+          <input type="email" placeholder="nome@faminas.edu.br" style="height:42px;padding:0 12px;border:1px solid #D8DCE3;border-radius:8px;background:#F3F4F7;font-size:14px;color:#373E4D" />
+        </label>
+        <label style="display:flex;flex-direction:column;gap:6px">
+          <span style="font-size:13px;font-weight:600;color:#373E4D">Senha</span>
+          <input type="password" placeholder="••••••••" style="height:42px;padding:0 12px;border:1px solid #D8DCE3;border-radius:8px;background:#F3F4F7;font-size:14px;color:#373E4D" />
+        </label>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <span style="font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#6B7385">Perfil de acesso</span>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          <button type="button" onClick="{{ pickCoord }}" style="height:38px;border-radius:8px;border:1px solid #D8DCE3;background:{{ bgPerfilCoord }};color:{{ fgPerfilCoord }};font-size:13px;font-weight:600;cursor:pointer;transition:all .15s" style-hover="border-color:#1E40AF">Coordenação</button>
+          <button type="button" onClick="{{ pickSecretaria }}" style="height:38px;border-radius:8px;border:1px solid #D8DCE3;background:{{ bgPerfilSec }};color:{{ fgPerfilSec }};font-size:13px;font-weight:600;cursor:pointer;transition:all .15s" style-hover="border-color:#1E40AF">Secretaria</button>
+          <button type="button" onClick="{{ pickPreceptor }}" style="height:38px;border-radius:8px;border:1px solid #D8DCE3;background:{{ bgPerfilPrec }};color:{{ fgPerfilPrec }};font-size:13px;font-weight:600;cursor:pointer;transition:all .15s" style-hover="border-color:#1E40AF">Preceptor</button>
+          <button type="button" onClick="{{ pickAluno }}" style="height:38px;border-radius:8px;border:1px solid #D8DCE3;background:{{ bgPerfilAluno }};color:{{ fgPerfilAluno }};font-size:13px;font-weight:600;cursor:pointer;transition:all .15s" style-hover="border-color:#1E40AF">Aluno</button>
+        </div>
+      </div>
+
+      <button type="button" onClick="{{ entrar }}" style="height:44px;border:none;border-radius:8px;background:#1E40AF;color:#fff;font-size:15px;font-weight:600;cursor:pointer;transition:background .15s;box-shadow:0 4px 6px -1px rgba(27,32,41,.08)" style-hover="background:#1B3A9E">Entrar</button>
+
+      <sc-if value="{{ showApiHints }}" hint-placeholder-val="{{ true }}">
+        <div style="border-top:1px solid #EFF1F4;padding-top:14px;display:flex;flex-direction:column;gap:6px">
+          <span style="font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#9AA2B1">Plugue sua API aqui</span>
+          <code style="font-family:'JetBrains Mono';font-size:12px;color:#2D2A6F;background:#EAF1F8;border-radius:6px;padding:6px 8px">POST /auth/login → { token, perfil }</code>
+        </div>
+      </sc-if>
+    </div>
+  </div>
+</div>
+</sc-if>
+
+<sc-if value="{{ isApp }}">
+<div style="min-height:100vh;display:grid;grid-template-columns:248px 1fr;font-family:'Public Sans',system-ui,sans-serif;background:#F7F8FA">
+
+  <aside style="background:#2D2A6F;display:flex;flex-direction:column;padding:22px 0;position:sticky;top:0;height:100vh">
+    <div style="padding:0 20px 22px;border-bottom:1px solid rgba(255,255,255,.12)">
+      <img src="assets/logo-faminas-white.png" alt="FAMINAS" style="height:26px;width:auto;object-fit:contain" />
+      <div style="font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:rgba(255,255,255,.55);margin-top:10px">Campos de Estágio</div>
+    </div>
+
+    <nav style="display:flex;flex-direction:column;gap:2px;padding:16px 12px;overflow-y:auto;flex:1">
+      <div style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.4);padding:6px 10px 4px">Visão geral</div>
+      <button type="button" onClick="{{ goPainel }}" style="display:flex;align-items:center;gap:10px;padding:9px 10px;border:none;border-radius:6px;cursor:pointer;text-align:left;font-size:13.5px;font-weight:500;transition:background .15s;background:{{ bgPainel }};color:{{ fgPainel }}" style-hover="background:rgba(255,255,255,.09)">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="7" height="9"></rect><rect x="14" y="3" width="7" height="5"></rect><rect x="14" y="12" width="7" height="9"></rect><rect x="3" y="16" width="7" height="5"></rect></svg>
+        Painel de Indicadores
+      </button>
+      <button type="button" onClick="{{ goMapa }}" style="display:flex;align-items:center;gap:10px;padding:9px 10px;border:none;border-radius:6px;cursor:pointer;text-align:left;font-size:13.5px;font-weight:500;transition:background .15s;background:{{ bgMapa }};color:{{ fgMapa }}" style-hover="background:rgba(255,255,255,.09)">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+        Mapa de Campos
+      </button>
+
+      <div style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.4);padding:14px 10px 4px">Registro central</div>
+      <button type="button" onClick="{{ goCampos }}" style="display:flex;align-items:center;gap:10px;padding:9px 10px;border:none;border-radius:6px;cursor:pointer;text-align:left;font-size:13.5px;font-weight:500;transition:background .15s;background:{{ bgCampos }};color:{{ fgCampos }}" style-hover="background:rgba(255,255,255,.09)">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18"></path><path d="M2 22h20"></path><path d="M10 7h4M10 11h4M10 15h4"></path></svg>
+        Campos de Estágio
+      </button>
+      <button type="button" onClick="{{ goPreceptores }}" style="display:flex;align-items:center;gap:10px;padding:9px 10px;border:none;border-radius:6px;cursor:pointer;text-align:left;font-size:13.5px;font-weight:500;transition:background .15s;background:{{ bgPreceptores }};color:{{ fgPreceptores }}" style-hover="background:rgba(255,255,255,.09)">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="4"></circle><path d="M4 21a8 8 0 0 1 16 0"></path></svg>
+        Preceptores
+      </button>
+      <button type="button" onClick="{{ goVinculos }}" style="display:flex;align-items:center;gap:10px;padding:9px 10px;border:none;border-radius:6px;cursor:pointer;text-align:left;font-size:13.5px;font-weight:500;transition:background .15s;background:{{ bgVinculos }};color:{{ fgVinculos }}" style-hover="background:rgba(255,255,255,.09)">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 17H7A5 5 0 0 1 7 7h2"></path><path d="M15 7h2a5 5 0 0 1 0 10h-2"></path><path d="M8 12h8"></path></svg>
+        Vínculos
+      </button>
+      <button type="button" onClick="{{ goContratos }}" style="display:flex;align-items:center;gap:10px;padding:9px 10px;border:none;border-radius:6px;cursor:pointer;text-align:left;font-size:13.5px;font-weight:500;transition:background .15s;background:{{ bgContratos }};color:{{ fgContratos }}" style-hover="background:rgba(255,255,255,.09)">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M15 2H7a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6Z"></path><path d="M14 2v5h5"></path><path d="M9 13h6M9 17h4"></path></svg>
+        Contratos
+      </button>
+
+      <div style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.4);padding:14px 10px 4px">Operação</div>
+      <button type="button" onClick="{{ goDistribuicao }}" style="display:flex;align-items:center;gap:10px;padding:9px 10px;border:none;border-radius:6px;cursor:pointer;text-align:left;font-size:13.5px;font-weight:500;transition:background .15s;background:{{ bgDistribuicao }};color:{{ fgDistribuicao }}" style-hover="background:rgba(255,255,255,.09)">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"></rect><path d="M9 3v18M15 3v18M3 9h18M3 15h18"></path></svg>
+        Distribuição por Especialidade
+      </button>
+      <button type="button" onClick="{{ goSimulador }}" style="display:flex;align-items:center;gap:10px;padding:9px 10px;border:none;border-radius:6px;cursor:pointer;text-align:left;font-size:13.5px;font-weight:500;transition:background .15s;background:{{ bgSimulador }};color:{{ fgSimulador }}" style-hover="background:rgba(255,255,255,.09)">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"></path><circle cx="16" cy="7" r="2"></circle><circle cx="10" cy="17" r="2"></circle></svg>
+        Simulador de Cenários
+      </button>
+      <button type="button" onClick="{{ goAvaliacoes }}" style="display:flex;align-items:center;gap:10px;padding:9px 10px;border:none;border-radius:6px;cursor:pointer;text-align:left;font-size:13.5px;font-weight:500;transition:background .15s;background:{{ bgAvaliacoes }};color:{{ fgAvaliacoes }}" style-hover="background:rgba(255,255,255,.09)">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2Z"></path></svg>
+        Avaliações
+      </button>
+    </nav>
+
+    <div style="padding:14px 20px 0;border-top:1px solid rgba(255,255,255,.12);display:flex;align-items:center;justify-content:space-between;gap:8px">
+      <div style="display:flex;flex-direction:column;gap:1px;min-width:0">
+        <span style="font-size:12.5px;font-weight:600;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ perfil }}</span>
+        <span style="font-size:11px;color:rgba(255,255,255,.5)">Sessão ativa</span>
+      </div>
+      <button type="button" onClick="{{ sair }}" title="Sair" style="width:30px;height:30px;flex:none;display:flex;align-items:center;justify-content:center;border:1px solid rgba(255,255,255,.2);border-radius:6px;background:transparent;color:rgba(255,255,255,.7);cursor:pointer;transition:all .15s" style-hover="background:rgba(255,255,255,.1);color:#fff">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><path d="M16 17l5-5-5-5M21 12H9"></path></svg>
+      </button>
+    </div>
+  </aside>
+
+  <main style="min-width:0;display:flex;flex-direction:column">
+    <header style="background:#fff;border-bottom:1px solid #D8DCE3;padding:0 32px;height:64px;display:flex;align-items:center;justify-content:space-between;gap:24px;position:sticky;top:0;z-index:5">
+      <div style="display:flex;flex-direction:column;gap:1px;min-width:0">
+        <span style="font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#9AA2B1">{{ eyebrow }}</span>
+        <span style="font-family:'Plus Jakarta Sans';font-size:17px;font-weight:700;letter-spacing:-0.01em;color:#2A303C">{{ titulo }}</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;flex:none">
+        <div style="display:flex;align-items:center;gap:7px;height:36px;padding:0 12px;border:1px solid #D8DCE3;border-radius:8px;background:#F3F4F7;min-width:230px">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#9AA2B1" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><path d="m21 21-4.3-4.3"></path></svg>
+          <input type="text" placeholder="Buscar campo, preceptor, aluno…" style="border:none;background:transparent;font-size:13px;color:#373E4D;width:100%;outline:none" />
+        </div>
+        <span style="display:inline-flex;align-items:center;gap:6px;height:36px;padding:0 12px;border-radius:8px;background:#EAF1F8;border:1px solid #cfe0ef;font-size:12.5px;font-weight:600;color:#2D2A6F;white-space:nowrap">{{ perfil }}</span>
+      </div>
+    </header>
+
+    <div style="padding:28px 32px 56px;display:flex;flex-direction:column;gap:20px">
+
+      <sc-if value="{{ isPainel }}">
+      <div style="display:flex;flex-direction:column;gap:20px">
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px">
+          <div style="background:#fff;border:1px solid #D8DCE3;border-radius:8px;padding:18px 20px;box-shadow:0 1px 3px rgba(27,32,41,.08);display:flex;flex-direction:column;gap:6px">
+            <span style="font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#6B7385">Campos ativos</span>
+            <span style="font-family:'Plus Jakarta Sans';font-size:34px;font-weight:700;color:#2D2A6F;line-height:1">—</span>
+            <span style="font-size:12px;color:#9AA2B1">Contratos vigentes no período</span>
+          </div>
+          <div style="background:#fff;border:1px solid #D8DCE3;border-radius:8px;padding:18px 20px;box-shadow:0 1px 3px rgba(27,32,41,.08);display:flex;flex-direction:column;gap:6px">
+            <span style="font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#6B7385">Custo mensal total</span>
+            <span style="font-family:'Plus Jakarta Sans';font-size:34px;font-weight:700;color:#2D2A6F;line-height:1">—</span>
+            <span style="font-size:12px;color:#9AA2B1">Campos + preceptores</span>
+          </div>
+          <div style="background:#fff;border:1px solid #D8DCE3;border-radius:8px;padding:18px 20px;box-shadow:0 1px 3px rgba(27,32,41,.08);display:flex;flex-direction:column;gap:6px">
+            <span style="font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#6B7385">Score médio de campo</span>
+            <span style="font-family:'Plus Jakarta Sans';font-size:34px;font-weight:700;color:#2D2A6F;line-height:1">—</span>
+            <span style="font-size:12px;color:#9AA2B1">Metodologia definida pelo grupo</span>
+          </div>
+          <div style="background:#fff;border:1px solid #D8DCE3;border-radius:8px;padding:18px 20px;box-shadow:0 1px 3px rgba(27,32,41,.08);display:flex;flex-direction:column;gap:6px">
+            <span style="font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#6B7385">Cobertura de demanda</span>
+            <span style="font-family:'Plus Jakarta Sans';font-size:34px;font-weight:700;color:#D00C64;line-height:1">—</span>
+            <span style="font-size:12px;color:#9AA2B1">Vagas ofertadas ÷ alunos do período</span>
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1.35fr 1fr;gap:16px">
+          <div style="background:#fff;border:1px solid #D8DCE3;border-radius:8px;box-shadow:0 1px 3px rgba(27,32,41,.08);display:flex;flex-direction:column">
+            <div style="padding:16px 20px;border-bottom:1px solid #EFF1F4;display:flex;align-items:baseline;justify-content:space-between;gap:12px">
+              <h3 style="font-family:'Plus Jakarta Sans';font-size:15px;font-weight:600;color:#2A303C;margin:0">Custo × Score de Qualidade</h3>
+              <span style="font-size:12px;color:#9AA2B1">Cada ponto é um campo</span>
+            </div>
+            <div style="padding:20px;display:flex;gap:10px">
+              <div style="display:flex;flex-direction:column;justify-content:space-between;align-items:flex-end;font-size:10px;color:#9AA2B1;padding:2px 0;height:230px"><span>alto</span><span style="writing-mode:vertical-rl;transform:rotate(180deg);font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase">Score</span><span>baixo</span></div>
+              <div style="flex:1;display:flex;flex-direction:column;gap:8px">
+                <div style="height:230px;border:1px dashed #D8DCE3;border-radius:8px;background:linear-gradient(#FCFCFD,#FCFCFD) padding-box;display:flex;align-items:center;justify-content:center">
+                  <div style="text-align:center;display:flex;flex-direction:column;gap:6px;max-width:300px">
+                    <span style="font-family:'Plus Jakarta Sans';font-size:14px;font-weight:600;color:#2A303C">Sem dados para plotar</span>
+                    <span style="font-size:12.5px;color:#6B7385;line-height:1.5">O quadrante inferior-direito (caro e mal avaliado) é o candidato natural a renegociação.</span>
+                  </div>
+                </div>
+                <div style="display:flex;justify-content:space-between;font-size:10px;color:#9AA2B1"><span>baixo</span><span style="font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase">Custo por aluno</span><span>alto</span></div>
+              </div>
+            </div>
+          </div>
+
+          <div style="background:#fff;border:1px solid #D8DCE3;border-radius:8px;box-shadow:0 1px 3px rgba(27,32,41,.08);display:flex;flex-direction:column">
+            <div style="padding:16px 20px;border-bottom:1px solid #EFF1F4">
+              <h3 style="font-family:'Plus Jakarta Sans';font-size:15px;font-weight:600;color:#2A303C;margin:0">Status dos Campos</h3>
+            </div>
+            <div style="padding:20px;display:flex;flex-direction:column;gap:12px">
+              <div style="display:flex;align-items:center;gap:12px"><span style="width:9px;height:9px;border-radius:9999px;background:#1E7F4F;flex:none"></span><span style="font-size:13.5px;color:#373E4D;flex:1">Ativo</span><span style="font-family:'JetBrains Mono';font-size:13px;color:#9AA2B1">—</span></div>
+              <div style="display:flex;align-items:center;gap:12px"><span style="width:9px;height:9px;border-radius:9999px;background:#B7791F;flex:none"></span><span style="font-size:13.5px;color:#373E4D;flex:1">Em renegociação</span><span style="font-family:'JetBrains Mono';font-size:13px;color:#9AA2B1">—</span></div>
+              <div style="display:flex;align-items:center;gap:12px"><span style="width:9px;height:9px;border-radius:9999px;background:#6097CA;flex:none"></span><span style="font-size:13.5px;color:#373E4D;flex:1">Em prospecção</span><span style="font-family:'JetBrains Mono';font-size:13px;color:#9AA2B1">—</span></div>
+              <div style="display:flex;align-items:center;gap:12px"><span style="width:9px;height:9px;border-radius:9999px;background:#DC2626;flex:none"></span><span style="font-size:13.5px;color:#373E4D;flex:1">Encerrado</span><span style="font-family:'JetBrains Mono';font-size:13px;color:#9AA2B1">—</span></div>
+              <div style="height:1px;background:#EFF1F4;margin:2px 0"></div>
+              <div style="display:flex;align-items:center;gap:12px"><span style="font-size:13.5px;font-weight:600;color:#2A303C;flex:1">Total</span><span style="font-family:'JetBrains Mono';font-size:13px;font-weight:600;color:#2A303C">—</span></div>
+              <p style="font-size:12px;color:#9AA2B1;margin:6px 0 0;line-height:1.5">Monitoramento do campo ao longo do tempo: histórico de mudança de status por período.</p>
+            </div>
+          </div>
+        </div>
+
+        <div style="background:#EAF1F8;border:1px solid #cfe0ef;border-radius:8px;padding:16px 20px;display:flex;gap:12px;align-items:flex-start">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#2D2A6F" stroke-width="2" stroke-linecap="round" style="flex:none;margin-top:1px"><circle cx="12" cy="12" r="9"></circle><path d="M12 16v-5M12 8h.01"></path></svg>
+          <p style="font-size:13px;color:#373E4D;margin:0;line-height:1.6;text-wrap:pretty">O sistema calcula e apresenta dados para <strong style="font-weight:600;color:#2D2A6F">apoiar a decisão humana</strong> — não decide sozinho. Geolocalização é informação de apoio, nunca fator único de decisão.</p>
+        </div>
+
+        <sc-if value="{{ showApiHints }}">
+        <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center">
+          <span style="font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#9AA2B1">Endpoints desta tela</span>
+          <code style="font-family:'JetBrains Mono';font-size:12px;color:#2D2A6F;background:#fff;border:1px solid #D8DCE3;border-radius:6px;padding:5px 8px">GET /api/indicadores</code>
+          <code style="font-family:'JetBrains Mono';font-size:12px;color:#2D2A6F;background:#fff;border:1px solid #D8DCE3;border-radius:6px;padding:5px 8px">GET /api/campos?resumo=true</code>
+        </div>
+        </sc-if>
+      </div>
+      </sc-if>
+
+      <sc-if value="{{ isCampos }}">
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <div style="background:#fff;border:1px solid #D8DCE3;border-radius:8px;box-shadow:0 1px 3px rgba(27,32,41,.08);padding:16px 20px;display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end">
+          <label style="display:flex;flex-direction:column;gap:5px;flex:1;min-width:200px">
+            <span style="font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#6B7385">Buscar</span>
+            <input type="text" placeholder="Nome do campo…" style="height:38px;padding:0 11px;border:1px solid #D8DCE3;border-radius:8px;background:#F3F4F7;font-size:13.5px;color:#373E4D" />
+          </label>
+          <label style="display:flex;flex-direction:column;gap:5px;min-width:170px">
+            <span style="font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#6B7385">Especialidade</span>
+            <select style="height:38px;padding:0 8px;border:1px solid #D8DCE3;border-radius:8px;background:#F3F4F7;font-size:13.5px;color:#373E4D"><option>Todas</option><option>Atenção Primária</option><option>Ginecologia/Obstetrícia</option><option>Pediatria</option><option>Clínica Médica</option><option>Cirurgia</option><option>Saúde Mental</option><option>Urgência e Emergência</option></select>
+          </label>
+          <label style="display:flex;flex-direction:column;gap:5px;min-width:150px">
+            <span style="font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#6B7385">Relacionamento</span>
+            <select style="height:38px;padding:0 8px;border:1px solid #D8DCE3;border-radius:8px;background:#F3F4F7;font-size:13.5px;color:#373E4D"><option>Todos</option><option>Campo parceiro</option><option>Campo comum</option></select>
+          </label>
+          <label style="display:flex;flex-direction:column;gap:5px;min-width:140px">
+            <span style="font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#6B7385">Status</span>
+            <select style="height:38px;padding:0 8px;border:1px solid #D8DCE3;border-radius:8px;background:#F3F4F7;font-size:13.5px;color:#373E4D"><option>Todos</option><option>Ativo</option><option>Em renegociação</option><option>Em prospecção</option><option>Encerrado</option></select>
+          </label>
+          <button type="button" style="height:38px;padding:0 18px;border:none;border-radius:8px;background:#1E40AF;color:#fff;font-size:13.5px;font-weight:600;cursor:pointer;transition:background .15s" style-hover="background:#1B3A9E">Aplicar</button>
+          <button type="button" style="height:38px;padding:0 14px;border:1px solid #D8DCE3;border-radius:8px;background:#fff;color:#373E4D;font-size:13.5px;font-weight:600;cursor:pointer;transition:all .15s" style-hover="border-color:#9AA2B1">Limpar</button>
+        </div>
+
+        <div style="background:#fff;border:1px solid #D8DCE3;border-radius:8px;box-shadow:0 1px 3px rgba(27,32,41,.08);overflow:hidden">
+          <div style="padding:16px 20px;border-bottom:1px solid #EFF1F4;display:flex;align-items:center;justify-content:space-between;gap:12px">
+            <div style="display:flex;align-items:baseline;gap:10px">
+              <h3 style="font-family:'Plus Jakarta Sans';font-size:15px;font-weight:600;color:#2A303C;margin:0">Campos de Estágio</h3>
+              <span style="font-family:'JetBrains Mono';font-size:12px;color:#9AA2B1">— registros</span>
+            </div>
+            <button type="button" style="height:36px;padding:0 14px;border:none;border-radius:8px;background:#2D2A6F;color:#fff;font-size:13px;font-weight:600;cursor:pointer;transition:background .15s" style-hover="background:#252263">Novo Campo</button>
+          </div>
+          <div style="display:grid;grid-template-columns:1.6fr 1fr .8fr .7fr .8fr .7fr .9fr .6fr;gap:0;background:#FAFBFC;border-bottom:1px solid #EFF1F4;padding:10px 20px;font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#6B7385">
+            <span>Campo</span><span>Região</span><span>Tipo</span><span>Capac.</span><span>Custo/mês</span><span>Score</span><span>Status</span><span></span>
+          </div>
+          <div style="padding:56px 24px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:10px">
+            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#C2C8D2" stroke-width="1.6" stroke-linecap="round"><path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18"></path><path d="M2 22h20"></path><path d="M10 7h4M10 11h4"></path></svg>
+            <span style="font-family:'Plus Jakarta Sans';font-size:15px;font-weight:600;color:#2A303C">Nenhum campo cadastrado</span>
+            <p style="font-size:13px;color:#6B7385;margin:0;max-width:420px;line-height:1.55">Conecte a listagem da sua API ou cadastre o primeiro campo para começar a qualificar.</p>
+            <sc-if value="{{ showApiHints }}">
+              <code style="font-family:'JetBrains Mono';font-size:12px;color:#2D2A6F;background:#EAF1F8;border-radius:6px;padding:6px 9px;margin-top:2px">GET /api/campos?especialidade=&amp;tipo=&amp;status=</code>
+            </sc-if>
+            <div style="display:flex;gap:8px;margin-top:8px">
+              <button type="button" onClick="{{ goCampo }}" style="height:36px;padding:0 14px;border:1px solid #D8DCE3;border-radius:8px;background:#fff;color:#1E40AF;font-size:13px;font-weight:600;cursor:pointer;transition:all .15s" style-hover="border-color:#1E40AF">Ver ficha de exemplo</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      </sc-if>
+
+      <sc-if value="{{ isCampo }}">
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <button type="button" onClick="{{ goCampos }}" style="align-self:flex-start;display:flex;align-items:center;gap:6px;border:none;background:transparent;padding:0;color:#1E40AF;font-size:13px;font-weight:600;cursor:pointer">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 12H5M12 19l-7-7 7-7"></path></svg>
+          Voltar para Campos
+        </button>
+
+        <div style="background:#fff;border:1px solid #D8DCE3;border-radius:8px;box-shadow:0 1px 3px rgba(27,32,41,.08);padding:22px 24px;display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap">
+          <div style="display:flex;flex-direction:column;gap:10px;min-width:260px">
+            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+              <span style="font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#9AA2B1">Ficha do campo</span>
+              <span style="font-size:11px;font-weight:600;padding:3px 8px;border-radius:9999px;background:#FCE6F0;color:#B00B55">Campo parceiro</span>
+              <span style="font-size:11px;font-weight:600;padding:3px 8px;border-radius:9999px;background:#E7F4ED;color:#1E7F4F">Ativo</span>
+            </div>
+            <h2 style="font-family:'Plus Jakarta Sans';font-size:26px;font-weight:700;letter-spacing:-0.02em;color:#2A303C;margin:0">Nome do Campo de Estágio</h2>
+            <div style="display:flex;gap:18px;flex-wrap:wrap;font-size:13px;color:#6B7385">
+              <span>Região: —</span><span>Consultórios: —</span><span>Capacidade total: —</span><span>Custo/mês: —</span>
+            </div>
+          </div>
+          <div style="border:1px solid #D8DCE3;border-radius:8px;padding:16px 22px;display:flex;flex-direction:column;align-items:center;gap:2px;background:#FAFBFC;min-width:150px">
+            <span style="font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#6B7385">Score do campo</span>
+            <span style="font-family:'Plus Jakarta Sans';font-size:44px;font-weight:700;color:#2D2A6F;line-height:1.1">—</span>
+            <span style="font-size:11.5px;color:#9AA2B1">calculado pela API</span>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:2px;border-bottom:1px solid #D8DCE3;padding:0 4px">
+          <span style="padding:10px 14px;font-size:13.5px;font-weight:600;color:#2D2A6F;border-bottom:2px solid #D00C64;margin-bottom:-1px">Qualificação</span>
+          <span style="padding:10px 14px;font-size:13.5px;font-weight:500;color:#6B7385">Preceptores</span>
+          <span style="padding:10px 14px;font-size:13.5px;font-weight:500;color:#6B7385">Vínculos</span>
+          <span style="padding:10px 14px;font-size:13.5px;font-weight:500;color:#6B7385">Contratos</span>
+          <span style="padding:10px 14px;font-size:13.5px;font-weight:500;color:#6B7385">Avaliações</span>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 340px;gap:16px;align-items:start">
+          <div style="background:#fff;border:1px solid #D8DCE3;border-radius:8px;box-shadow:0 1px 3px rgba(27,32,41,.08);overflow:hidden">
+            <div style="padding:16px 20px;border-bottom:1px solid #EFF1F4">
+              <h3 style="font-family:'Plus Jakarta Sans';font-size:15px;font-weight:600;color:#2A303C;margin:0">Atributos de Qualificação</h3>
+              <p style="font-size:12.5px;color:#6B7385;margin:4px 0 0">Valores e nota por atributo vêm da API. A ponderação é definida pelo grupo no back-end.</p>
+            </div>
+            <div style="display:grid;grid-template-columns:1.4fr .8fr .6fr;padding:9px 20px;background:#FAFBFC;border-bottom:1px solid #EFF1F4;font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#6B7385">
+              <span>Atributo</span><span>Valor registrado</span><span style="text-align:right">Nota</span>
+            </div>
+            <div style="display:flex;flex-direction:column">
+              <sc-for list="{{ atributosCampo }}" as="attr" hint-placeholder-count="8">
+                <div style="display:grid;grid-template-columns:1.4fr .8fr .6fr;padding:12px 20px;border-bottom:1px solid #F7F8FA;align-items:center">
+                  <span style="font-size:13.5px;color:#373E4D">{{ attr.nome }}</span>
+                  <span style="font-size:13px;color:#9AA2B1">{{ attr.valor }}</span>
+                  <span style="font-family:'JetBrains Mono';font-size:13px;color:#9AA2B1;text-align:right">—</span>
+                </div>
+              </sc-for>
+            </div>
+            <sc-if value="{{ showApiHints }}">
+              <div style="padding:14px 20px;background:#FAFBFC">
+                <code style="font-family:'JetBrains Mono';font-size:12px;color:#2D2A6F;background:#EAF1F8;border-radius:6px;padding:6px 9px">GET /api/campos/:id → { atributos[], score }</code>
+              </div>
+            </sc-if>
+          </div>
+
+          <div style="display:flex;flex-direction:column;gap:16px">
+            <div style="background:#fff;border:1px solid #D8DCE3;border-radius:8px;box-shadow:0 1px 3px rgba(27,32,41,.08);padding:18px 20px;display:flex;flex-direction:column;gap:12px">
+              <h3 style="font-family:'Plus Jakarta Sans';font-size:15px;font-weight:600;color:#2A303C;margin:0">Capacidade por Especialidade</h3>
+              <p style="font-size:12.5px;color:#6B7385;margin:0;line-height:1.5">A capacidade de alunos varia por especialidade dentro do mesmo campo.</p>
+              <div style="border:1px dashed #D8DCE3;border-radius:8px;padding:22px;text-align:center;font-size:13px;color:#9AA2B1;background:#FCFCFD">Nenhuma especialidade configurada</div>
+            </div>
+            <div style="background:#fff;border:1px solid #D8DCE3;border-radius:8px;box-shadow:0 1px 3px rgba(27,32,41,.08);padding:18px 20px;display:flex;flex-direction:column;gap:10px">
+              <h3 style="font-family:'Plus Jakarta Sans';font-size:15px;font-weight:600;color:#2A303C;margin:0">Ações</h3>
+              <button type="button" style="height:38px;border:none;border-radius:8px;background:#1E40AF;color:#fff;font-size:13.5px;font-weight:600;cursor:pointer;transition:background .15s" style-hover="background:#1B3A9E">Editar Qualificação</button>
+              <button type="button" style="height:38px;border:1px solid #D8DCE3;border-radius:8px;background:#fff;color:#373E4D;font-size:13.5px;font-weight:600;cursor:pointer;transition:all .15s" style-hover="border-color:#9AA2B1">Registrar Renegociação</button>
+              <button type="button" style="height:38px;border:1px solid #f3c9c9;border-radius:8px;background:#fff;color:#DC2626;font-size:13.5px;font-weight:600;cursor:pointer;transition:all .15s" style-hover="background:#FBE9E9">Encerrar Contrato</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      </sc-if>
+
+      <sc-if value="{{ isPreceptores }}">
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <div style="background:#fff;border:1px solid #D8DCE3;border-radius:8px;box-shadow:0 1px 3px rgba(27,32,41,.08);padding:16px 20px;display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end">
+          <label style="display:flex;flex-direction:column;gap:5px;flex:1;min-width:200px">
+            <span style="font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#6B7385">Buscar</span>
+            <input type="text" placeholder="Nome do preceptor…" style="height:38px;padding:0 11px;border:1px solid #D8DCE3;border-radius:8px;background:#F3F4F7;font-size:13.5px;color:#373E4D" />
+          </label>
+          <label style="display:flex;flex-direction:column;gap:5px;min-width:170px">
+            <span style="font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#6B7385">Titulação</span>
+            <select style="height:38px;padding:0 8px;border:1px solid #D8DCE3;border-radius:8px;background:#F3F4F7;font-size:13.5px;color:#373E4D"><option>Todas</option><option>Especialização</option><option>Residência</option><option>Mestrado</option><option>Doutorado</option></select>
+          </label>
+          <label style="display:flex;flex-direction:column;gap:5px;min-width:170px">
+            <span style="font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#6B7385">Campo vinculado</span>
+            <select style="height:38px;padding:0 8px;border:1px solid #D8DCE3;border-radius:8px;background:#F3F4F7;font-size:13.5px;color:#373E4D"><option>Todos</option></select>
+          </label>
+          <button type="button" style="height:38px;padding:0 18px;border:none;border-radius:8px;background:#1E40AF;color:#fff;font-size:13.5px;font-weight:600;cursor:pointer;transition:background .15s" style-hover="background:#1B3A9E">Aplicar</button>
+        </div>
+
+        <div style="background:#fff;border:1px solid #D8DCE3;border-radius:8px;box-shadow:0 1px 3px rgba(27,32,41,.08);overflow:hidden">
+          <div style="padding:16px 20px;border-bottom:1px solid #EFF1F4;display:flex;align-items:center;justify-content:space-between;gap:12px">
+            <div style="display:flex;align-items:baseline;gap:10px">
+              <h3 style="font-family:'Plus Jakarta Sans';font-size:15px;font-weight:600;color:#2A303C;margin:0">Preceptores</h3>
+              <span style="font-family:'JetBrains Mono';font-size:12px;color:#9AA2B1">— registros</span>
+            </div>
+            <button type="button" style="height:36px;padding:0 14px;border:none;border-radius:8px;background:#2D2A6F;color:#fff;font-size:13px;font-weight:600;cursor:pointer;transition:background .15s" style-hover="background:#252263">Novo Preceptor</button>
+          </div>
+          <div style="display:grid;grid-template-columns:1.5fr 1fr 1.2fr .9fr .7fr .7fr;padding:10px 20px;background:#FAFBFC;border-bottom:1px solid #EFF1F4;font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#6B7385">
+            <span>Preceptor</span><span>Titulação</span><span>Campos</span><span>Disponib.</span><span>Score</span><span></span>
+          </div>
+          <div style="padding:56px 24px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:10px">
+            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#C2C8D2" stroke-width="1.6" stroke-linecap="round"><circle cx="12" cy="8" r="4"></circle><path d="M4 21a8 8 0 0 1 16 0"></path></svg>
+            <span style="font-family:'Plus Jakarta Sans';font-size:15px;font-weight:600;color:#2A303C">Nenhum preceptor cadastrado</span>
+            <p style="font-size:13px;color:#6B7385;margin:0;max-width:420px;line-height:1.55">Um preceptor pode ter vínculo com um ou mais campos.</p>
+            <button type="button" onClick="{{ goPreceptor }}" style="height:36px;padding:0 14px;border:1px solid #D8DCE3;border-radius:8px;background:#fff;color:#1E40AF;font-size:13px;font-weight:600;cursor:pointer;margin-top:6px;transition:all .15s" style-hover="border-color:#1E40AF">Ver ficha de exemplo</button>
+          </div>
+        </div>
+      </div>
+      </sc-if>
+
+      <sc-if value="{{ isPreceptor }}">
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <button type="button" onClick="{{ goPreceptores }}" style="align-self:flex-start;display:flex;align-items:center;gap:6px;border:none;background:transparent;padding:0;color:#1E40AF;font-size:13px;font-weight:600;cursor:pointer">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 12H5M12 19l-7-7 7-7"></path></svg>
+          Voltar para Preceptores
+        </button>
+
+        <div style="background:#fff;border:1px solid #D8DCE3;border-radius:8px;box-shadow:0 1px 3px rgba(27,32,41,.08);padding:22px 24px;display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap;align-items:center">
+          <div style="display:flex;align-items:center;gap:16px">
+            <div style="width:56px;height:56px;border-radius:9999px;background:#EAF1F8;display:flex;align-items:center;justify-content:center;flex:none">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#2D2A6F" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="8" r="4"></circle><path d="M4 21a8 8 0 0 1 16 0"></path></svg>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:5px">
+              <span style="font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#9AA2B1">Ficha do preceptor</span>
+              <h2 style="font-family:'Plus Jakarta Sans';font-size:24px;font-weight:700;letter-spacing:-0.02em;color:#2A303C;margin:0">Nome do Preceptor</h2>
+              <div style="display:flex;gap:16px;flex-wrap:wrap;font-size:13px;color:#6B7385"><span>CRM: —</span><span>Especialidade: —</span><span>Campos vinculados: —</span></div>
+            </div>
+          </div>
+          <div style="border:1px solid #D8DCE3;border-radius:8px;padding:16px 22px;display:flex;flex-direction:column;align-items:center;gap:2px;background:#FAFBFC;min-width:150px">
+            <span style="font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#6B7385">Score preceptoria</span>
+            <span style="font-family:'Plus Jakarta Sans';font-size:44px;font-weight:700;color:#2D2A6F;line-height:1.1">—</span>
+            <span style="font-size:11.5px;color:#9AA2B1">calculado pela API</span>
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 340px;gap:16px;align-items:start">
+          <div style="background:#fff;border:1px solid #D8DCE3;border-radius:8px;box-shadow:0 1px 3px rgba(27,32,41,.08);overflow:hidden">
+            <div style="padding:16px 20px;border-bottom:1px solid #EFF1F4">
+              <h3 style="font-family:'Plus Jakarta Sans';font-size:15px;font-weight:600;color:#2A303C;margin:0">Atributos de Qualificação</h3>
+            </div>
+            <div style="display:grid;grid-template-columns:1.4fr .8fr .6fr;padding:9px 20px;background:#FAFBFC;border-bottom:1px solid #EFF1F4;font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#6B7385">
+              <span>Atributo</span><span>Valor registrado</span><span style="text-align:right">Nota</span>
+            </div>
+            <sc-for list="{{ atributosPreceptor }}" as="attr" hint-placeholder-count="6">
+              <div style="display:grid;grid-template-columns:1.4fr .8fr .6fr;padding:12px 20px;border-bottom:1px solid #F7F8FA;align-items:center">
+                <span style="font-size:13.5px;color:#373E4D">{{ attr.nome }}</span>
+                <span style="font-size:13px;color:#9AA2B1">{{ attr.valor }}</span>
+                <span style="font-family:'JetBrains Mono';font-size:13px;color:#9AA2B1;text-align:right">—</span>
+              </div>
+            </sc-for>
+          </div>
+
+          <div style="background:#fff;border:1px solid #D8DCE3;border-radius:8px;box-shadow:0 1px 3px rgba(27,32,41,.08);padding:18px 20px;display:flex;flex-direction:column;gap:12px">
+            <h3 style="font-family:'Plus Jakarta Sans';font-size:15px;font-weight:600;color:#2A303C;margin:0">Campos Vinculados</h3>
+            <div style="border:1px dashed #D8DCE3;border-radius:8px;padding:22px;text-align:center;font-size:13px;color:#9AA2B1;background:#FCFCFD">Nenhum vínculo com campo</div>
+            <h3 style="font-family:'Plus Jakarta Sans';font-size:15px;font-weight:600;color:#2A303C;margin:6px 0 0">Histórico de Contratação</h3>
+            <div style="border:1px dashed #D8DCE3;border-radius:8px;padding:22px;text-align:center;font-size:13px;color:#9AA2B1;background:#FCFCFD">Sem histórico registrado</div>
+          </div>
+        </div>
+      </div>
+      </sc-if>
+
+      <sc-if value="{{ isVinculos }}">
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <div style="background:#FBF1DD;border:1px solid #eeddb8;border-radius:8px;padding:14px 18px;display:flex;gap:11px;align-items:flex-start">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#B7791F" stroke-width="2" stroke-linecap="round" style="flex:none;margin-top:1px"><path d="M12 3l9 16H3Z"></path><path d="M12 9v4M12 16h.01"></path></svg>
+          <p style="font-size:13px;color:#373E4D;margin:0;line-height:1.6;text-wrap:pretty"><strong style="font-weight:600;color:#B7791F">Dado pessoal sensível (LGPD).</strong> O local de moradia do aluno é exibido em granularidade de região e permanece mascarado por padrão. Revele apenas quando houver necessidade real de uso.</p>
+        </div>
+
+        <div style="background:#fff;border:1px solid #D8DCE3;border-radius:8px;box-shadow:0 1px 3px rgba(27,32,41,.08);padding:16px 20px;display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end">
+          <label style="display:flex;flex-direction:column;gap:5px;min-width:160px">
+            <span style="font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#6B7385">Período</span>
+            <select style="height:38px;padding:0 8px;border:1px solid #D8DCE3;border-radius:8px;background:#F3F4F7;font-size:13.5px;color:#373E4D"><option>2026/2</option><option>2026/1</option></select>
+          </label>
+          <label style="display:flex;flex-direction:column;gap:5px;min-width:150px">
+            <span style="font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#6B7385">Situação</span>
+            <select style="height:38px;padding:0 8px;border:1px solid #D8DCE3;border-radius:8px;background:#F3F4F7;font-size:13.5px;color:#373E4D"><option>Todas</option><option>Em andamento</option><option>Concluído</option><option>Interrompido</option></select>
+          </label>
+          <label style="display:flex;flex-direction:column;gap:5px;flex:1;min-width:180px">
+            <span style="font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#6B7385">Aluno, campo ou preceptor</span>
+            <input type="text" placeholder="Buscar…" style="height:38px;padding:0 11px;border:1px solid #D8DCE3;border-radius:8px;background:#F3F4F7;font-size:13.5px;color:#373E4D" />
+          </label>
+          <button type="button" onClick="{{ toggleMoradia }}" style="height:38px;padding:0 14px;display:flex;align-items:center;gap:7px;border:1px solid #D8DCE3;border-radius:8px;background:#fff;color:#373E4D;font-size:13px;font-weight:600;cursor:pointer;transition:all .15s" style-hover="border-color:#1E40AF">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7Z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+            {{ labelMoradia }}
+          </button>
+        </div>
+
+        <div style="background:#fff;border:1px solid #D8DCE3;border-radius:8px;box-shadow:0 1px 3px rgba(27,32,41,.08);overflow:hidden">
+          <div style="padding:16px 20px;border-bottom:1px solid #EFF1F4;display:flex;align-items:center;justify-content:space-between;gap:12px">
+            <div style="display:flex;align-items:baseline;gap:10px">
+              <h3 style="font-family:'Plus Jakarta Sans';font-size:15px;font-weight:600;color:#2A303C;margin:0">Vínculos Aluno · Campo · Preceptor</h3>
+              <span style="font-family:'JetBrains Mono';font-size:12px;color:#9AA2B1">— registros</span>
+            </div>
+            <button type="button" style="height:36px;padding:0 14px;border:none;border-radius:8px;background:#2D2A6F;color:#fff;font-size:13px;font-weight:600;cursor:pointer;transition:background .15s" style-hover="background:#252263">Novo Vínculo</button>
+          </div>
+          <div style="display:grid;grid-template-columns:1.2fr 1.1fr 1.1fr .8fr .8fr .7fr .7fr .9fr;padding:10px 20px;background:#FAFBFC;border-bottom:1px solid #EFF1F4;font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#6B7385">
+            <span>Aluno</span><span>Campo</span><span>Preceptor</span><span>{{ colMoradia }}</span><span>Período</span><span>Semanas</span><span>Horas</span><span>Situação</span>
+          </div>
+          <div style="padding:56px 24px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:10px">
+            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#C2C8D2" stroke-width="1.6" stroke-linecap="round"><path d="M9 17H7A5 5 0 0 1 7 7h2"></path><path d="M15 7h2a5 5 0 0 1 0 10h-2"></path><path d="M8 12h8"></path></svg>
+            <span style="font-family:'Plus Jakarta Sans';font-size:15px;font-weight:600;color:#2A303C">Nenhum vínculo no período</span>
+            <p style="font-size:13px;color:#6B7385;margin:0;max-width:440px;line-height:1.55">Cada vínculo une aluno, campo, preceptor e período, com carga horária em semanas e horas.</p>
+            <sc-if value="{{ showApiHints }}">
+              <code style="font-family:'JetBrains Mono';font-size:12px;color:#2D2A6F;background:#EAF1F8;border-radius:6px;padding:6px 9px;margin-top:2px">GET /api/vinculos?periodo=2026-2</code>
+            </sc-if>
+          </div>
+        </div>
+      </div>
+      </sc-if>
+
+      <sc-if value="{{ isContratos }}">
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+          <div style="background:#fff;border:1px solid #D8DCE3;border-radius:8px;box-shadow:0 1px 3px rgba(27,32,41,.08);padding:20px;display:flex;flex-direction:column;gap:10px">
+            <div style="display:flex;align-items:center;gap:9px">
+              <span style="width:24px;height:24px;border-radius:9999px;background:#2D2A6F;color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex:none">1</span>
+              <h3 style="font-family:'Plus Jakarta Sans';font-size:15.5px;font-weight:600;color:#2A303C;margin:0">Contrato Único com o Campo</h3>
+            </div>
+            <p style="font-size:13.5px;color:#6B7385;margin:0;line-height:1.6">A instituição contrata apenas o campo, que repassa internamente ao preceptor ou aos preceptores vinculados.</p>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:2px">
+              <span style="font-family:'JetBrains Mono';font-size:11px;padding:4px 8px;border-radius:6px;background:#F3F4F7;color:#4D5566">1 contrato</span>
+              <span style="font-family:'JetBrains Mono';font-size:11px;padding:4px 8px;border-radius:6px;background:#F3F4F7;color:#4D5566">repasse interno</span>
+            </div>
+          </div>
+          <div style="background:#fff;border:1px solid #D8DCE3;border-radius:8px;box-shadow:0 1px 3px rgba(27,32,41,.08);padding:20px;display:flex;flex-direction:column;gap:10px">
+            <div style="display:flex;align-items:center;gap:9px">
+              <span style="width:24px;height:24px;border-radius:9999px;background:#D00C64;color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex:none">2</span>
+              <h3 style="font-family:'Plus Jakarta Sans';font-size:15.5px;font-weight:600;color:#2A303C;margin:0">Contratos Separados</h3>
+            </div>
+            <p style="font-size:13.5px;color:#6B7385;margin:0;line-height:1.6">Um contrato com o campo e outro (ou outros) diretamente com o preceptor ou preceptores.</p>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:2px">
+              <span style="font-family:'JetBrains Mono';font-size:11px;padding:4px 8px;border-radius:6px;background:#F3F4F7;color:#4D5566">N contratos</span>
+              <span style="font-family:'JetBrains Mono';font-size:11px;padding:4px 8px;border-radius:6px;background:#F3F4F7;color:#4D5566">pagamento direto</span>
+            </div>
+          </div>
+        </div>
+
+        <div style="background:#fff;border:1px solid #D8DCE3;border-radius:8px;box-shadow:0 1px 3px rgba(27,32,41,.08);overflow:hidden">
+          <div style="padding:16px 20px;border-bottom:1px solid #EFF1F4;display:flex;align-items:center;justify-content:space-between;gap:12px">
+            <div style="display:flex;align-items:baseline;gap:10px">
+              <h3 style="font-family:'Plus Jakarta Sans';font-size:15px;font-weight:600;color:#2A303C;margin:0">Contratos</h3>
+              <span style="font-family:'JetBrains Mono';font-size:12px;color:#9AA2B1">— registros</span>
+            </div>
+            <button type="button" style="height:36px;padding:0 14px;border:none;border-radius:8px;background:#2D2A6F;color:#fff;font-size:13px;font-weight:600;cursor:pointer;transition:background .15s" style-hover="background:#252263">Novo Contrato</button>
+          </div>
+          <div style="display:grid;grid-template-columns:.7fr 1.4fr 1.2fr .9fr 1fr .8fr;padding:10px 20px;background:#FAFBFC;border-bottom:1px solid #EFF1F4;font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#6B7385">
+            <span>Código</span><span>Contratado</span><span>Modelo</span><span>Valor</span><span>Vigência</span><span>Situação</span>
+          </div>
+          <div style="padding:52px 24px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:10px">
+            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#C2C8D2" stroke-width="1.6" stroke-linecap="round"><path d="M15 2H7a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6Z"></path><path d="M14 2v5h5"></path></svg>
+            <span style="font-family:'Plus Jakarta Sans';font-size:15px;font-weight:600;color:#2A303C">Nenhum contrato registrado</span>
+            <p style="font-size:13px;color:#6B7385;margin:0;max-width:440px;line-height:1.55">Vigência, renovação e forma de cálculo do valor ficam pendentes de definição com a coordenação.</p>
+          </div>
+        </div>
+      </div>
+      </sc-if>
+
+      <sc-if value="{{ isDistribuicao }}">
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <div style="background:#fff;border:1px solid #D8DCE3;border-radius:8px;box-shadow:0 1px 3px rgba(27,32,41,.08);padding:16px 20px;display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end">
+          <label style="display:flex;flex-direction:column;gap:5px;min-width:160px">
+            <span style="font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#6B7385">Período</span>
+            <select style="height:38px;padding:0 8px;border:1px solid #D8DCE3;border-radius:8px;background:#F3F4F7;font-size:13.5px;color:#373E4D"><option>2026/2</option><option>2026/1</option></select>
+          </label>
+          <label style="display:flex;flex-direction:column;gap:5px;min-width:160px">
+            <span style="font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#6B7385">Grade</span>
+            <select style="height:38px;padding:0 8px;border:1px solid #D8DCE3;border-radius:8px;background:#F3F4F7;font-size:13.5px;color:#373E4D"><option>Internato</option><option>Ciclo básico</option></select>
+          </label>
+          <div style="flex:1"></div>
+          <button type="button" style="height:38px;padding:0 16px;border:1px solid #D8DCE3;border-radius:8px;background:#fff;color:#373E4D;font-size:13.5px;font-weight:600;cursor:pointer;transition:all .15s" style-hover="border-color:#9AA2B1">Exportar Grade</button>
+        </div>
+
+        <div style="background:#fff;border:1px solid #D8DCE3;border-radius:8px;box-shadow:0 1px 3px rgba(27,32,41,.08);overflow:hidden">
+          <div style="padding:16px 20px;border-bottom:1px solid #EFF1F4">
+            <h3 style="font-family:'Plus Jakarta Sans';font-size:15px;font-weight:600;color:#2A303C;margin:0">Capacidade por Especialidade</h3>
+            <p style="font-size:12.5px;color:#6B7385;margin:4px 0 0">Capacidade de referência pendente de confirmação com a coordenação; a lista completa de especialidades ainda será fornecida.</p>
+          </div>
+          <div style="display:grid;grid-template-columns:1.5fr .9fr .9fr .9fr .9fr;padding:10px 20px;background:#FAFBFC;border-bottom:1px solid #EFF1F4;font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#6B7385">
+            <span>Especialidade</span><span>Capac. / campo</span><span>Vagas ofertadas</span><span>Alunos alocados</span><span>Saldo</span>
+          </div>
+          <sc-for list="{{ especialidades }}" as="esp" hint-placeholder-count="7">
+            <div style="display:grid;grid-template-columns:1.5fr .9fr .9fr .9fr .9fr;padding:13px 20px;border-bottom:1px solid #F7F8FA;align-items:center">
+              <span style="font-size:13.5px;color:#373E4D;font-weight:500">{{ esp.nome }}</span>
+              <span style="font-family:'JetBrains Mono';font-size:13px;color:#9AA2B1">{{ esp.ref }}</span>
+              <span style="font-family:'JetBrains Mono';font-size:13px;color:#9AA2B1">—</span>
+              <span style="font-family:'JetBrains Mono';font-size:13px;color:#9AA2B1">—</span>
+              <span style="font-family:'JetBrains Mono';font-size:13px;color:#9AA2B1">—</span>
+            </div>
+          </sc-for>
+          <div style="padding:14px 20px;background:#FAFBFC;font-size:12px;color:#9AA2B1">Regra mencionada na reunião: 1 consultório para cada 3 a 4 alunos — a confirmar.</div>
+        </div>
+      </div>
+      </sc-if>
+
+      <sc-if value="{{ isSimulador }}">
+      <div style="display:grid;grid-template-columns:380px 1fr;gap:16px;align-items:start">
+        <div style="background:#fff;border:1px solid #D8DCE3;border-radius:8px;box-shadow:0 1px 3px rgba(27,32,41,.08);display:flex;flex-direction:column">
+          <div style="padding:16px 20px;border-bottom:1px solid #EFF1F4">
+            <h3 style="font-family:'Plus Jakarta Sans';font-size:15px;font-weight:600;color:#2A303C;margin:0">Seleção de Campos</h3>
+            <p style="font-size:12.5px;color:#6B7385;margin:4px 0 0">Escolha um conjunto de campos para compor a hipótese de contratação.</p>
+          </div>
+          <div style="padding:16px 20px;display:flex;flex-direction:column;gap:12px">
+            <div style="display:flex;align-items:center;gap:7px;height:38px;padding:0 11px;border:1px solid #D8DCE3;border-radius:8px;background:#F3F4F7">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#9AA2B1" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><path d="m21 21-4.3-4.3"></path></svg>
+              <input type="text" placeholder="Filtrar campos…" style="border:none;background:transparent;font-size:13.5px;color:#373E4D;width:100%;outline:none" />
+            </div>
+            <div style="border:1px dashed #D8DCE3;border-radius:8px;padding:38px 20px;text-align:center;background:#FCFCFD;display:flex;flex-direction:column;gap:6px">
+              <span style="font-family:'Plus Jakarta Sans';font-size:14px;font-weight:600;color:#2A303C">Nenhum campo disponível</span>
+              <span style="font-size:12.5px;color:#6B7385;line-height:1.5">Cadastre campos para montar cenários.</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding-top:4px">
+              <span style="font-size:12.5px;color:#6B7385">Selecionados: <strong style="font-family:'JetBrains Mono';color:#2A303C">0</strong></span>
+              <button type="button" style="height:36px;padding:0 16px;border:none;border-radius:8px;background:#1E40AF;color:#fff;font-size:13px;font-weight:600;cursor:pointer;transition:background .15s" style-hover="background:#1B3A9E">Calcular Cenário</button>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:16px">
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px">
+            <div style="background:#fff;border:1px solid #D8DCE3;border-radius:8px;padding:16px 18px;box-shadow:0 1px 3px rgba(27,32,41,.08);display:flex;flex-direction:column;gap:4px">
+              <span style="font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#6B7385">Custo total</span>
+              <span style="font-family:'Plus Jakarta Sans';font-size:28px;font-weight:700;color:#2D2A6F;line-height:1.1">—</span>
+            </div>
+            <div style="background:#fff;border:1px solid #D8DCE3;border-radius:8px;padding:16px 18px;box-shadow:0 1px 3px rgba(27,32,41,.08);display:flex;flex-direction:column;gap:4px">
+              <span style="font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#6B7385">Custo médio / aluno</span>
+              <span style="font-family:'Plus Jakarta Sans';font-size:28px;font-weight:700;color:#2D2A6F;line-height:1.1">—</span>
+            </div>
+            <div style="background:#fff;border:1px solid #D8DCE3;border-radius:8px;padding:16px 18px;box-shadow:0 1px 3px rgba(27,32,41,.08);display:flex;flex-direction:column;gap:4px">
+              <span style="font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#6B7385">Score médio</span>
+              <span style="font-family:'Plus Jakarta Sans';font-size:28px;font-weight:700;color:#2D2A6F;line-height:1.1">—</span>
+            </div>
+            <div style="background:#fff;border:1px solid #D8DCE3;border-radius:8px;padding:16px 18px;box-shadow:0 1px 3px rgba(27,32,41,.08);display:flex;flex-direction:column;gap:4px">
+              <span style="font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#6B7385">Cobertura</span>
+              <span style="font-family:'Plus Jakarta Sans';font-size:28px;font-weight:700;color:#D00C64;line-height:1.1">—</span>
+            </div>
+          </div>
+
+          <div style="background:#fff;border:1px solid #D8DCE3;border-radius:8px;box-shadow:0 1px 3px rgba(27,32,41,.08);overflow:hidden">
+            <div style="padding:16px 20px;border-bottom:1px solid #EFF1F4">
+              <h3 style="font-family:'Plus Jakarta Sans';font-size:15px;font-weight:600;color:#2A303C;margin:0">Comparar Cenários</h3>
+              <p style="font-size:12.5px;color:#6B7385;margin:4px 0 0">Hipóteses de contratação lado a lado.</p>
+            </div>
+            <div style="display:grid;grid-template-columns:1.1fr 1fr 1fr 1fr">
+              <div style="display:flex;flex-direction:column;background:#FAFBFC;border-right:1px solid #EFF1F4">
+                <span style="padding:11px 18px;font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#6B7385;border-bottom:1px solid #EFF1F4">Métrica</span>
+                <span style="padding:13px 18px;font-size:13.5px;color:#373E4D;border-bottom:1px solid #F1F3F6">Campos incluídos</span>
+                <span style="padding:13px 18px;font-size:13.5px;color:#373E4D;border-bottom:1px solid #F1F3F6">Custo total</span>
+                <span style="padding:13px 18px;font-size:13.5px;color:#373E4D;border-bottom:1px solid #F1F3F6">Custo médio / aluno</span>
+                <span style="padding:13px 18px;font-size:13.5px;color:#373E4D;border-bottom:1px solid #F1F3F6">Score médio</span>
+                <span style="padding:13px 18px;font-size:13.5px;color:#373E4D">Cobertura de demanda</span>
+              </div>
+              <sc-for list="{{ cenarios }}" as="cen" hint-placeholder-count="3">
+                <div style="display:flex;flex-direction:column;border-right:1px solid #EFF1F4">
+                  <span style="padding:11px 18px;font-size:11.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#2D2A6F;border-bottom:1px solid #EFF1F4">{{ cen.nome }}</span>
+                  <span style="padding:13px 18px;font-family:'JetBrains Mono';font-size:13px;color:#9AA2B1;border-bottom:1px solid #F1F3F6">—</span>
+                  <span style="padding:13px 18px;font-family:'JetBrains Mono';font-size:13px;color:#9AA2B1;border-bottom:1px solid #F1F3F6">—</span>
+                  <span style="padding:13px 18px;font-family:'JetBrains Mono';font-size:13px;color:#9AA2B1;border-bottom:1px solid #F1F3F6">—</span>
+                  <span style="padding:13px 18px;font-family:'JetBrains Mono';font-size:13px;color:#9AA2B1;border-bottom:1px solid #F1F3F6">—</span>
+                  <span style="padding:13px 18px;font-family:'JetBrains Mono';font-size:13px;color:#9AA2B1">—</span>
+                </div>
+              </sc-for>
+            </div>
+            <sc-if value="{{ showApiHints }}">
+              <div style="padding:14px 20px;background:#FAFBFC">
+                <code style="font-family:'JetBrains Mono';font-size:12px;color:#2D2A6F;background:#EAF1F8;border-radius:6px;padding:6px 9px">POST /api/simulacoes { camposIds[] } → { custoTotal, custoMedioAluno, scoreMedio, cobertura }</code>
+              </div>
+            </sc-if>
+          </div>
+        </div>
+      </div>
+      </sc-if>
+
+      <sc-if value="{{ isMapa }}">
+      <div style="display:grid;grid-template-columns:1fr 300px;gap:16px;align-items:start">
+        <div style="background:#fff;border:1px solid #D8DCE3;border-radius:8px;box-shadow:0 1px 3px rgba(27,32,41,.08);overflow:hidden">
+          <div style="padding:16px 20px;border-bottom:1px solid #EFF1F4;display:flex;align-items:center;justify-content:space-between;gap:12px">
+            <h3 style="font-family:'Plus Jakarta Sans';font-size:15px;font-weight:600;color:#2A303C;margin:0">Distribuição Geográfica</h3>
+            <div style="display:flex;gap:6px">
+              <span style="padding:6px 11px;border-radius:8px;background:#EAF1F8;border:1px solid #cfe0ef;font-size:12.5px;font-weight:600;color:#2D2A6F">Campos</span>
+              <span style="padding:6px 11px;border-radius:8px;background:#F7F8FA;border:1px solid #D8DCE3;font-size:12.5px;font-weight:500;color:#6B7385">Alunos por região</span>
+            </div>
+          </div>
+          <div style="padding:20px">
+            <div style="height:430px;border:1px dashed #D8DCE3;border-radius:8px;background:#FCFCFD;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px">
+              <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#C2C8D2" stroke-width="1.5" stroke-linecap="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+              <span style="font-family:'Plus Jakarta Sans';font-size:15px;font-weight:600;color:#2A303C">Mapa aguardando dados</span>
+              <p style="font-size:13px;color:#6B7385;margin:0;max-width:400px;text-align:center;line-height:1.55">Plugue aqui a biblioteca de mapa da sua escolha e as coordenadas dos campos retornadas pela API.</p>
+              <sc-if value="{{ showApiHints }}">
+                <code style="font-family:'JetBrains Mono';font-size:12px;color:#2D2A6F;background:#EAF1F8;border-radius:6px;padding:6px 9px">GET /api/campos/geo → [{ id, nome, lat, lng, score, custo }]</code>
+              </sc-if>
+            </div>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:16px">
+          <div style="background:#fff;border:1px solid #D8DCE3;border-radius:8px;box-shadow:0 1px 3px rgba(27,32,41,.08);padding:18px 20px;display:flex;flex-direction:column;gap:11px">
+            <h3 style="font-family:'Plus Jakarta Sans';font-size:15px;font-weight:600;color:#2A303C;margin:0">Legenda</h3>
+            <div style="display:flex;align-items:center;gap:10px"><span style="width:11px;height:11px;border-radius:9999px;background:#2D2A6F;flex:none"></span><span style="font-size:13px;color:#373E4D">Campo parceiro</span></div>
+            <div style="display:flex;align-items:center;gap:10px"><span style="width:11px;height:11px;border-radius:9999px;background:#6097CA;flex:none"></span><span style="font-size:13px;color:#373E4D">Campo comum</span></div>
+            <div style="display:flex;align-items:center;gap:10px"><span style="width:11px;height:11px;border-radius:9999px;background:#D00C64;flex:none"></span><span style="font-size:13px;color:#373E4D">Atenção requerida</span></div>
+            <div style="height:1px;background:#EFF1F4"></div>
+            <p style="font-size:12.5px;color:#6B7385;margin:0;line-height:1.55">O tamanho do marcador pode representar capacidade; a cor, o tipo de relacionamento.</p>
+          </div>
+          <div style="background:#FBF1DD;border:1px solid #eeddb8;border-radius:8px;padding:16px 18px;display:flex;gap:11px;align-items:flex-start">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#B7791F" stroke-width="2" stroke-linecap="round" style="flex:none;margin-top:1px"><circle cx="12" cy="12" r="9"></circle><path d="M12 16v-5M12 8h.01"></path></svg>
+            <p style="font-size:12.5px;color:#373E4D;margin:0;line-height:1.6">Geolocalização é informação de apoio, <strong style="font-weight:600">nunca fator único</strong> de decisão. Moradia de aluno só em granularidade de região.</p>
+          </div>
+        </div>
+      </div>
+      </sc-if>
+
+      <sc-if value="{{ isAvaliacoes }}">
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+          <button type="button" onClick="{{ alvoCampo }}" style="height:36px;padding:0 15px;border:1px solid #D8DCE3;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;transition:all .15s;background:{{ bgAlvoCampo }};color:{{ fgAlvoCampo }}">Avaliações de Campo</button>
+          <button type="button" onClick="{{ alvoPreceptor }}" style="height:36px;padding:0 15px;border:1px solid #D8DCE3;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;transition:all .15s;background:{{ bgAlvoPrec }};color:{{ fgAlvoPrec }}">Avaliações de Preceptor</button>
+          <div style="flex:1"></div>
+          <select style="height:36px;padding:0 8px;border:1px solid #D8DCE3;border-radius:8px;background:#fff;font-size:13px;color:#373E4D"><option>Período 2026/2</option><option>Período 2026/1</option></select>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1.6fr;gap:16px;align-items:start">
+          <div style="background:#fff;border:1px solid #D8DCE3;border-radius:8px;box-shadow:0 1px 3px rgba(27,32,41,.08);padding:20px;display:flex;flex-direction:column;gap:16px">
+            <div style="display:flex;flex-direction:column;gap:3px">
+              <span style="font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#6B7385">NPS {{ alvoLabel }}</span>
+              <span style="font-family:'Plus Jakarta Sans';font-size:44px;font-weight:700;color:#2D2A6F;line-height:1.1">—</span>
+              <span style="font-size:12px;color:#9AA2B1">promotores − detratores</span>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:11px">
+              <div style="display:flex;flex-direction:column;gap:5px">
+                <div style="display:flex;justify-content:space-between;font-size:12.5px;color:#373E4D"><span>Promotores (9–10)</span><span style="font-family:'JetBrains Mono';color:#9AA2B1">—</span></div>
+                <div style="height:6px;border-radius:9999px;background:#EFF1F4"></div>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:5px">
+                <div style="display:flex;justify-content:space-between;font-size:12.5px;color:#373E4D"><span>Neutros (7–8)</span><span style="font-family:'JetBrains Mono';color:#9AA2B1">—</span></div>
+                <div style="height:6px;border-radius:9999px;background:#EFF1F4"></div>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:5px">
+                <div style="display:flex;justify-content:space-between;font-size:12.5px;color:#373E4D"><span>Detratores (0–6)</span><span style="font-family:'JetBrains Mono';color:#9AA2B1">—</span></div>
+                <div style="height:6px;border-radius:9999px;background:#EFF1F4"></div>
+              </div>
+            </div>
+            <p style="font-size:12.5px;color:#6B7385;margin:0;line-height:1.55;border-top:1px solid #EFF1F4;padding-top:12px">Avaliação feita pelo aluno ao final do estágio, separadamente para campo e para preceptor.</p>
+          </div>
+
+          <div style="background:#fff;border:1px solid #D8DCE3;border-radius:8px;box-shadow:0 1px 3px rgba(27,32,41,.08);overflow:hidden">
+            <div style="padding:16px 20px;border-bottom:1px solid #EFF1F4;display:flex;align-items:baseline;justify-content:space-between;gap:12px">
+              <h3 style="font-family:'Plus Jakarta Sans';font-size:15px;font-weight:600;color:#2A303C;margin:0">Comentários</h3>
+              <span style="font-family:'JetBrains Mono';font-size:12px;color:#9AA2B1">— respostas</span>
+            </div>
+            <div style="padding:62px 24px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:10px">
+              <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#C2C8D2" stroke-width="1.6" stroke-linecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2Z"></path></svg>
+              <span style="font-family:'Plus Jakarta Sans';font-size:15px;font-weight:600;color:#2A303C">Nenhuma avaliação recebida</span>
+              <p style="font-size:13px;color:#6B7385;margin:0;max-width:400px;line-height:1.55">Nota do tipo NPS e texto livre aparecem aqui ao final de cada estágio.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      </sc-if>
+
+    </div>
+  </main>
+</div>
+</sc-if>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;mostrarEndpoints&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Base de ensino&quot;}}">
+class Component extends DCLogic {
+  state = { logged: false, screen: 'painel', perfil: 'Coordenação de Medicina', moradia: false, alvo: 'campo' };
+
+  meta = {
+    painel: ['Visão geral', 'Painel de Indicadores'],
+    mapa: ['Visão geral', 'Mapa de Campos'],
+    campos: ['Registro central', 'Campos de Estágio'],
+    campo: ['Registro central', 'Ficha do Campo'],
+    preceptores: ['Registro central', 'Preceptores'],
+    preceptor: ['Registro central', 'Ficha do Preceptor'],
+    vinculos: ['Registro central', 'Vínculos'],
+    contratos: ['Registro central', 'Contratos'],
+    distribuicao: ['Operação', 'Distribuição por Especialidade'],
+    simulador: ['Operação', 'Simulador de Cenários'],
+    avaliacoes: ['Operação', 'Avaliações']
+  };
+
+  nav(screen) { return () => this.setState({ screen }); }
+
+  navStyle(keys) {
+    const on = keys.indexOf(this.state.screen) !== -1;
+    return { bg: on ? 'rgba(255,255,255,.14)' : 'transparent', fg: on ? '#FFFFFF' : 'rgba(255,255,255,.72)' };
+  }
+
+  perfilStyle(nome) {
+    const on = this.state.perfil === nome;
+    return { bg: on ? '#EAF1F8' : '#FFFFFF', fg: on ? '#2D2A6F' : '#4D5566' };
+  }
+
+  alvoStyle(alvo) {
+    const on = this.state.alvo === alvo;
+    return { bg: on ? '#2D2A6F' : '#FFFFFF', fg: on ? '#FFFFFF' : '#4D5566' };
+  }
+
+  renderVals() {
+    const s = this.state.screen;
+    const m = this.meta[s] || ['', ''];
+    const pc = this.perfilStyle('Coordenação de Medicina');
+    const ps = this.perfilStyle('Secretaria');
+    const pp = this.perfilStyle('Preceptor');
+    const pa = this.perfilStyle('Aluno');
+    const nPainel = this.navStyle(['painel']);
+    const nMapa = this.navStyle(['mapa']);
+    const nCampos = this.navStyle(['campos', 'campo']);
+    const nPrec = this.navStyle(['preceptores', 'preceptor']);
+    const nVinc = this.navStyle(['vinculos']);
+    const nCont = this.navStyle(['contratos']);
+    const nDist = this.navStyle(['distribuicao']);
+    const nSim = this.navStyle(['simulador']);
+    const nAval = this.navStyle(['avaliacoes']);
+    const aCampo = this.alvoStyle('campo');
+    const aPrec = this.alvoStyle('preceptor');
+
+    return {
+      isLogin: !this.state.logged,
+      isApp: this.state.logged,
+      perfil: this.state.perfil,
+      eyebrow: m[0], titulo: m[1],
+      showApiHints: this.props.mostrarEndpoints ?? true,
+
+      entrar: () => this.setState({ logged: true, screen: 'painel' }),
+      sair: () => this.setState({ logged: false }),
+      pickCoord: () => this.setState({ perfil: 'Coordenação de Medicina' }),
+      pickSecretaria: () => this.setState({ perfil: 'Secretaria' }),
+      pickPreceptor: () => this.setState({ perfil: 'Preceptor' }),
+      pickAluno: () => this.setState({ perfil: 'Aluno' }),
+      bgPerfilCoord: pc.bg, fgPerfilCoord: pc.fg,
+      bgPerfilSec: ps.bg, fgPerfilSec: ps.fg,
+      bgPerfilPrec: pp.bg, fgPerfilPrec: pp.fg,
+      bgPerfilAluno: pa.bg, fgPerfilAluno: pa.fg,
+
+      goPainel: this.nav('painel'), goMapa: this.nav('mapa'),
+      goCampos: this.nav('campos'), goCampo: this.nav('campo'),
+      goPreceptores: this.nav('preceptores'), goPreceptor: this.nav('preceptor'),
+      goVinculos: this.nav('vinculos'), goContratos: this.nav('contratos'),
+      goDistribuicao: this.nav('distribuicao'), goSimulador: this.nav('simulador'),
+      goAvaliacoes: this.nav('avaliacoes'),
+
+      bgPainel: nPainel.bg, fgPainel: nPainel.fg,
+      bgMapa: nMapa.bg, fgMapa: nMapa.fg,
+      bgCampos: nCampos.bg, fgCampos: nCampos.fg,
+      bgPreceptores: nPrec.bg, fgPreceptores: nPrec.fg,
+      bgVinculos: nVinc.bg, fgVinculos: nVinc.fg,
+      bgContratos: nCont.bg, fgContratos: nCont.fg,
+      bgDistribuicao: nDist.bg, fgDistribuicao: nDist.fg,
+      bgSimulador: nSim.bg, fgSimulador: nSim.fg,
+      bgAvaliacoes: nAval.bg, fgAvaliacoes: nAval.fg,
+
+      isPainel: s === 'painel', isMapa: s === 'mapa', isCampos: s === 'campos',
+      isCampo: s === 'campo', isPreceptores: s === 'preceptores', isPreceptor: s === 'preceptor',
+      isVinculos: s === 'vinculos', isContratos: s === 'contratos',
+      isDistribuicao: s === 'distribuicao', isSimulador: s === 'simulador',
+      isAvaliacoes: s === 'avaliacoes',
+
+      toggleMoradia: () => this.setState(st => ({ moradia: !st.moradia })),
+      labelMoradia: this.state.moradia ? 'Ocultar moradia' : 'Revelar moradia',
+      colMoradia: this.state.moradia ? 'Moradia (região)' : 'Moradia ••••',
+
+      alvoCampo: () => this.setState({ alvo: 'campo' }),
+      alvoPreceptor: () => this.setState({ alvo: 'preceptor' }),
+      alvoLabel: this.state.alvo === 'campo' ? 'do campo' : 'do preceptor',
+      bgAlvoCampo: aCampo.bg, fgAlvoCampo: aCampo.fg,
+      bgAlvoPrec: aPrec.bg, fgAlvoPrec: aPrec.fg,
+
+      atributosCampo: [
+        { nome: 'Estrutura física (nº de consultórios)', valor: '—' },
+        { nome: 'Casuística e volume de atendimento', valor: '—' },
+        { nome: 'Equipamentos e insumos', valor: '—' },
+        { nome: 'Recursos humanos', valor: '—' },
+        { nome: 'Custo', valor: '—' },
+        { nome: 'Tipo de relacionamento', valor: '—' },
+        { nome: 'Localização / deslocamento', valor: '—' },
+        { nome: 'Segurança da unidade', valor: '—' }
+      ],
+      atributosPreceptor: [
+        { nome: 'Formação técnica / titulação', valor: '—' },
+        { nome: 'Relacionamento com o aluno', valor: '—' },
+        { nome: 'Qualidade das práticas', valor: '—' },
+        { nome: 'Participação e engajamento', valor: '—' },
+        { nome: 'Disponibilidade', valor: '—' },
+        { nome: 'Histórico de seleção / contratação', valor: '—' }
+      ],
+      especialidades: [
+        { nome: 'Atenção Primária', ref: '6' },
+        { nome: 'Ginecologia / Obstetrícia', ref: '3' },
+        { nome: 'Pediatria', ref: '3–4' },
+        { nome: 'Clínica Médica', ref: '—' },
+        { nome: 'Cirurgia', ref: '—' },
+        { nome: 'Saúde Mental', ref: '—' },
+        { nome: 'Urgência e Emergência', ref: '—' }
+      ],
+      cenarios: [{ nome: 'Cenário A' }, { nome: 'Cenário B' }, { nome: 'Cenário C' }]
+    };
+  }
+}
+</script>
+</body>
+</html>
