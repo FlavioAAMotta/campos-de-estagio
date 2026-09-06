@@ -1,0 +1,18 @@
+:root {
+  --color-brand: #2d2a6f;
+  --color-primary: #1e40af;
+  --color-accent: #d00c64;
+  --color-background: #f7f8fa;
+  --color-surface: #fff;
+  --color-text: #373e4d;
+  --color-heading: #2a303c;
+  --color-muted: #6b7385;
+  --color-border: #d8dce3;
+  --color-soft-border: #eff1f4;
+  --color-info: #eaf1f8;
+  --font-body: 'Public Sans', system-ui, sans-serif;
+  --font-heading: 'Plus Jakarta Sans', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --radius: 8px;
+  --shadow: 0 1px 3px rgb(27 32 41 / 8%);
+}
