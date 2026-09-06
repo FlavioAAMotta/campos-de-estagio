@@ -1,0 +1,6 @@
+node_modules
+dist
+coverage
+prototipo
+package-lock.json
+tmp
