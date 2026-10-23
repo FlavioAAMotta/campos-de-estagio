@@ -1,5 +1,6 @@
 // Rótulos para a prévia. Os cadastros e regras serão definidos pela API do grupo.
-export const profiles = ['Coordenação', 'Secretaria', 'Preceptor', 'Aluno'];
+// Os perfis seguem os papéis da API: ADMIN faz tudo e CONSULTA só lê (GET).
+export const profiles = ['Administração (ADMIN)', 'Consulta (CONSULTA)'];
 
 export const fieldAttributes = [
   'Estrutura física (nº de consultórios)',

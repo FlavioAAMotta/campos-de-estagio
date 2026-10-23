@@ -18,13 +18,13 @@ export default function LoginPage() {
           <span className="eyebrow">Coordenação de Medicina</span>
           <h1>Gestão de Campos de Estágio</h1>
           <p>
-            Qualificação de campos e preceptores, registro central de contratos
-            e vínculos, painel de indicadores e simulação de cenários de
-            contratação.
+            Cadastro de campos e consultórios, alunos e alocações, faixas de
+            ocupação e importação em lote. Preceptores, contratos, painel e
+            simulação são funcionalidades extras, de escolha do grupo.
           </p>
           <div className="inline-actions">
-            <span className="badge">Módulo 1 · Qualificação</span>
-            <span className="badge">Módulo 2 · Gerenciamento</span>
+            <span className="badge">Contrato comum</span>
+            <span className="badge">Extras opcionais</span>
           </div>
         </div>
         <small>Desenvolvimento de APIs · Base para os projetos da turma</small>
@@ -38,7 +38,7 @@ export default function LoginPage() {
           <Field
             label="E-mail institucional"
             type="email"
-            placeholder="nome@faminas.edu.br"
+            placeholder="nome@exemplo.com"
             disabled
           />
           <Field
@@ -67,7 +67,8 @@ export default function LoginPage() {
           </Button>
           <p className="login-note">
             Modo de demonstração, sem autenticação. O perfil selecionado apenas
-            identifica a navegação; todas as telas ficam acessíveis.
+            identifica a navegação; todas as telas ficam acessíveis. Na API, o
+            ADMIN pode tudo e a CONSULTA só lê.
           </p>
         </div>
       </section>
