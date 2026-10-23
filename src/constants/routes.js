@@ -4,6 +4,7 @@ export const routes = {
   mapa: '/mapa',
   campos: '/campos',
   campoExemplo: '/campos/exemplo',
+  consultorios: '/consultorios',
   preceptores: '/preceptores',
   preceptorExemplo: '/preceptores/exemplo',
   vinculos: '/vinculos',
@@ -25,6 +26,7 @@ export const navigation = [
     title: 'Registro central',
     items: [
       { to: routes.campos, label: 'Campos de Estágio' },
+      { to: routes.consultorios, label: 'Consultórios' },
       { to: routes.preceptores, label: 'Preceptores' },
       { to: routes.vinculos, label: 'Vínculos' },
       { to: routes.contratos, label: 'Contratos' },
