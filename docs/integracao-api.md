@@ -69,13 +69,15 @@ await api('/importacoes', {
         especialidade: 'Nome da especialidade',
         capacidadeMin: 1,
         capacidadeMax: 4,
+        tipoAtendimento: 'AMBULATORIAL',
       },
     ],
   },
 });
 ```
 
-`json` e `body` são alternativas; envie apenas uma. A importação do contrato
+`json` e `body` são alternativas; envie apenas uma. `tipoAtendimento` é opcional na linha: se ausente, vale `AMBULATORIAL`, e um valor
+desconhecido gera o erro `TIPO_INVALIDO`. A importação do contrato
 comum recebe JSON com a lista `linhas`, sem upload de arquivo. Se o grupo
 preferir enviar um arquivo com `FormData`, não defina `Content-Type`
 manualmente: o navegador precisa gerar o separador do upload. Use `URLSearchParams` para montar filtros e `encodeURIComponent` para segmentos
@@ -155,16 +157,16 @@ Estas rotas fazem parte do contrato comum da disciplina. Códigos esperados:
 inválidos, 404 para recurso inexistente e 409 ao apagar um campo que ainda tem
 consultórios.
 
-| Tela               | Rotas                                                                                                                                                                              | Observações                                                                                                        |
-| ------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
-| Entrada            | `POST /auth/login`, `POST /usuarios`, `GET /usuarios`                                                                                                                              | Login devolve `{ token }`. Criar e listar usuários é só para ADMIN. CONSULTA só faz GET.                           |
-| Campos             | `POST /campos`, `GET /campos`, `GET /campos/:id`, `PATCH /campos/:id`, `DELETE /campos/:id`                                                                                        | Campos: nome, endereco, classificacao, municipioId. Apagar com consultórios retorna 409.                           |
-| Consultórios       | `POST /consultorios`, `GET /consultorios`, `GET /consultorios?campoId=...`, `GET /consultorios/:id`, `PATCH /consultorios/:id`, `DELETE /consultorios/:id`                         | Campos: numero, campoId, especialidadeId, capacidadeMin, capacidadeMax.                                            |
-| Listas de apoio    | `GET /municipios`, `GET /especialidades`, `GET /health`                                                                                                                            | Alimentam os filtros e os formulários. `/health` confere se a API está no ar.                                      |
-| Alunos e alocações | `POST /alunos`, `GET /alunos`, `GET /alunos/:id`, `DELETE /alunos/:id`, `POST /alocacoes`, `GET /alocacoes?consultorioId=&alunoId=`, `GET /alocacoes/:id`, `DELETE /alocacoes/:id` | Aluno: nome, matricula. Alocação: alunoId, consultorioId. Alocação INACEITAVEL retorna 400 `OCUPACAO_INACEITAVEL`. |
-| Ocupação           | `GET /consultorios/:id/ocupacao`                                                                                                                                                   | Devolve classificação IDEAL, ACEITAVEL ou INACEITAVEL e a lista de alertas, cada um com sua evidência.             |
-| Faixas de ocupação | `GET /faixas`, `PATCH /faixas/:id`                                                                                                                                                 | Uma faixa por especialidade, guardada no banco, com `ideal` e `maximoAceitavel`.                                   |
-| Importação         | `POST /importacoes`, `GET /importacoes/:id`, `POST /importacoes/:id/confirmar`                                                                                                     | Envio em JSON com `linhas`. Fica PENDENTE_CONFIRMACAO até a confirmação, que cria campos e consultórios.           |
+| Tela               | Rotas                                                                                                                                                                              | Observações                                                                                                                                                                                                        |
+| ------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Entrada            | `POST /auth/login`, `POST /usuarios`, `GET /usuarios`                                                                                                                              | Login devolve `{ token }`. Criar e listar usuários é só para ADMIN. CONSULTA só faz GET.                                                                                                                           |
+| Campos             | `POST /campos`, `GET /campos`, `GET /campos/:id`, `PATCH /campos/:id`, `DELETE /campos/:id`                                                                                        | Campos: nome, endereco, classificacao, municipioId. Apagar com consultórios retorna 409.                                                                                                                           |
+| Consultórios       | `POST /consultorios`, `GET /consultorios`, `GET /consultorios?campoId=...`, `GET /consultorios/:id`, `PATCH /consultorios/:id`, `DELETE /consultorios/:id`                         | Campos: numero, campoId, especialidadeId, capacidadeMin, capacidadeMax e `tipoAtendimento` (opcional: `AMBULATORIAL`, o padrão, ou `PRONTO_ATENDIMENTO`; as respostas sempre o incluem).                           |
+| Listas de apoio    | `GET /municipios`, `GET /especialidades`, `GET /health`                                                                                                                            | Alimentam os filtros e os formulários. `/health` confere se a API está no ar.                                                                                                                                      |
+| Alunos e alocações | `POST /alunos`, `GET /alunos`, `GET /alunos/:id`, `DELETE /alunos/:id`, `POST /alocacoes`, `GET /alocacoes?consultorioId=&alunoId=`, `GET /alocacoes/:id`, `DELETE /alocacoes/:id` | Aluno: nome, matricula. Alocação: alunoId, consultorioId. Alocação INACEITAVEL retorna 400 `OCUPACAO_INACEITAVEL`.                                                                                                 |
+| Ocupação           | `GET /consultorios/:id/ocupacao`                                                                                                                                                   | Devolve classificação IDEAL, ACEITAVEL ou INACEITAVEL e a lista de alertas, cada um com sua evidência.                                                                                                             |
+| Faixas de ocupação | `GET /faixas`, `GET /faixas?especialidadeId=&tipoAtendimento=`, `PATCH /faixas/:id`                                                                                                | Uma faixa por especialidade e tipo de atendimento, guardada no banco, com `id`, `especialidadeId`, `tipoAtendimento`, `ideal` e `maximoAceitavel`. Ex.: Cirurgia em pronto atendimento permite no máximo 2 alunos. |
+| Importação         | `POST /importacoes`, `GET /importacoes/:id`, `POST /importacoes/:id/confirmar`                                                                                                     | Envio em JSON com `linhas`. Fica PENDENTE_CONFIRMACAO até a confirmação, que cria campos e consultórios.                                                                                                           |
 
 ### Funcionalidades extras (escolha do grupo)
 
