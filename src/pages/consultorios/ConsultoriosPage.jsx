@@ -9,6 +9,7 @@ const columns = [
   { key: 'numero', label: 'Número' },
   { key: 'campo', label: 'Campo' },
   { key: 'especialidade', label: 'Especialidade' },
+  { key: 'tipoAtendimento', label: 'Tipo de atendimento' },
   { key: 'capacidadeMin', label: 'Capacidade mínima' },
   { key: 'capacidadeMax', label: 'Capacidade máxima' },
 ];
@@ -19,6 +20,10 @@ export default function ConsultoriosPage() {
       <FilterBar>
         <SelectField label="Campo" options={['Todos']} />
         <SelectField label="Especialidade" options={['Todas']} />
+        <SelectField
+          label="Tipo de atendimento"
+          options={['Todos', 'Ambulatorial', 'Pronto atendimento']}
+        />
         <PendingButton>Aplicar</PendingButton>
         <PendingButton variant="secondary">Limpar</PendingButton>
       </FilterBar>
@@ -35,9 +40,11 @@ export default function ConsultoriosPage() {
         />
       </Card>
       <Notice>
-        Todo consultório pertence a um campo e a uma especialidade. A listagem
-        por campo usa o filtro <code>campoId</code>, e a capacidade mínima não
-        pode ser maior que a máxima.
+        Todo consultório pertence a um campo e a uma especialidade. O tipo de
+        atendimento é opcional (<code>tipoAtendimento</code>: AMBULATORIAL, o
+        padrão, ou PRONTO_ATENDIMENTO). A listagem por campo usa o filtro{' '}
+        <code>campoId</code>, e a capacidade mínima não pode ser maior que a
+        máxima.
       </Notice>
     </div>
   );
