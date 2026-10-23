@@ -63,7 +63,8 @@ export const importErrorCodes = [
   },
   {
     id: 'TIPO_INVALIDO',
-    explicacao: 'O valor não tem o tipo esperado, como texto em vez de número.',
+    explicacao:
+      'O valor não tem o tipo esperado, como texto em vez de número, ou o tipoAtendimento não é AMBULATORIAL nem PRONTO_ATENDIMENTO.',
   },
   {
     id: 'CAPACIDADE_INVALIDA',
