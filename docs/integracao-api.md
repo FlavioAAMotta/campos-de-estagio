@@ -56,14 +56,29 @@ const resultado = await api('/campos', {
   json: { nome: 'Nome informado no formulário' },
 });
 
-const formData = new FormData();
-formData.append('arquivo', arquivoSelecionado);
-await api('/importacoes', { method: 'POST', body: formData });
+await api('/importacoes', {
+  method: 'POST',
+  json: {
+    linhas: [
+      {
+        campo: 'Nome do campo',
+        endereco: 'Endereço do campo',
+        classificacao: 'Classificação do campo',
+        municipio: 'Nome do município',
+        consultorio: '1',
+        especialidade: 'Nome da especialidade',
+        capacidadeMin: 1,
+        capacidadeMax: 4,
+      },
+    ],
+  },
+});
 ```
 
-`json` e `body` são alternativas; envie apenas uma. Para `FormData`, não defina
-`Content-Type` manualmente: o navegador precisa gerar o separador do upload.
-Use `URLSearchParams` para montar filtros e `encodeURIComponent` para segmentos
+`json` e `body` são alternativas; envie apenas uma. A importação do contrato
+comum recebe JSON com a lista `linhas`, sem upload de arquivo. Se o grupo
+preferir enviar um arquivo com `FormData`, não defina `Content-Type`
+manualmente: o navegador precisa gerar o separador do upload. Use `URLSearchParams` para montar filtros e `encodeURIComponent` para segmentos
 dinâmicos de caminho.
 
 O retorno é o corpo da resposta, sem conversões de entidades ou extração de
@@ -108,20 +123,57 @@ O perfil volta ao padrão quando a página é recarregada.
 
 Ao implementar login, substitua esse estado pela sessão definida pelo grupo e
 adapte a tela inicial e o layout. O cliente aceita `headers` e `credentials`,
-sem decidir onde armazenar credenciais. A autorização de operações e de acesso
-à região de moradia deve ser verificada pela API. Esconder botões no frontend
-não substitui essa verificação.
+sem decidir onde armazenar credenciais.
 
-## Telas e sugestões de recursos
+Com o contrato comum, `POST /auth/login` recebe `{ email, senha }` e devolve
+`{ token }`. Envie o token em todas as chamadas protegidas, no cabeçalho
+`Authorization: Bearer <token>`:
+
+```js
+await api('/campos', {
+  headers: { Authorization: `Bearer ${token}` },
+});
+```
+
+A API responde **401** quando o token falta, é inválido ou expirou, e **403**
+quando o token é válido, mas o papel não tem permissão (por exemplo, um usuário
+CONSULTA tentando criar ou apagar). Trate os dois casos de forma diferente: o
+401 leva ao login, o 403 mostra uma mensagem de acesso negado.
+
+Esconder botões no frontend melhora a experiência, mas não substitui a
+autorização da API: toda permissão precisa ser verificada no servidor. O mesmo
+vale para dados restritos, como a região de moradia do aluno.
+
+## Telas e recursos
+
+O prefixo `/api` fica na URL base. As rotas abaixo seguem a divisão das entregas.
+
+### Contrato comum (Entregas 2 a 5)
+
+Estas rotas fazem parte do contrato comum da disciplina. Códigos esperados:
+201 na criação, 200 na leitura e na alteração, 204 na remoção, 400 para dados
+inválidos, 404 para recurso inexistente e 409 ao apagar um campo que ainda tem
+consultórios.
+
+| Tela               | Rotas                                                                                                                                                                              | Observações                                                                                                        |
+| ------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| Entrada            | `POST /auth/login`, `POST /usuarios`, `GET /usuarios`                                                                                                                              | Login devolve `{ token }`. Criar e listar usuários é só para ADMIN. CONSULTA só faz GET.                           |
+| Campos             | `POST /campos`, `GET /campos`, `GET /campos/:id`, `PATCH /campos/:id`, `DELETE /campos/:id`                                                                                        | Campos: nome, endereco, classificacao, municipioId. Apagar com consultórios retorna 409.                           |
+| Consultórios       | `POST /consultorios`, `GET /consultorios`, `GET /consultorios?campoId=...`, `GET /consultorios/:id`, `PATCH /consultorios/:id`, `DELETE /consultorios/:id`                         | Campos: numero, campoId, especialidadeId, capacidadeMin, capacidadeMax.                                            |
+| Listas de apoio    | `GET /municipios`, `GET /especialidades`, `GET /health`                                                                                                                            | Alimentam os filtros e os formulários. `/health` confere se a API está no ar.                                      |
+| Alunos e alocações | `POST /alunos`, `GET /alunos`, `GET /alunos/:id`, `DELETE /alunos/:id`, `POST /alocacoes`, `GET /alocacoes?consultorioId=&alunoId=`, `GET /alocacoes/:id`, `DELETE /alocacoes/:id` | Aluno: nome, matricula. Alocação: alunoId, consultorioId. Alocação INACEITAVEL retorna 400 `OCUPACAO_INACEITAVEL`. |
+| Ocupação           | `GET /consultorios/:id/ocupacao`                                                                                                                                                   | Devolve classificação IDEAL, ACEITAVEL ou INACEITAVEL e a lista de alertas, cada um com sua evidência.             |
+| Faixas de ocupação | `GET /faixas`, `PATCH /faixas/:id`                                                                                                                                                 | Uma faixa por especialidade, guardada no banco, com `ideal` e `maximoAceitavel`.                                   |
+| Importação         | `POST /importacoes`, `GET /importacoes/:id`, `POST /importacoes/:id/confirmar`                                                                                                     | Envio em JSON com `linhas`. Fica PENDENTE_CONFIRMACAO até a confirmação, que cria campos e consultórios.           |
+
+### Funcionalidades extras (escolha do grupo)
 
 Estas são sugestões extraídas do protótipo, **não endpoints existentes nem um
-contrato obrigatório**. O prefixo `/api` fica na URL base.
+contrato obrigatório**. O grupo escolhe quais implementar e deve documentá-las.
 
 | Tela         | Recurso sugerido                            | Trabalho do grupo                                   |
 | ------------ | ------------------------------------------- | --------------------------------------------------- |
-| Entrada      | `POST /auth/login`                          | Sessão e permissões                                 |
 | Painel       | `GET /indicadores`                          | Consolidar os indicadores                           |
-| Campos       | `GET /campos` e `GET /campos/:id`           | Listagem, filtros e ficha                           |
 | Preceptores  | `GET /preceptores` e `GET /preceptores/:id` | Listagem e qualificação                             |
 | Vínculos     | `GET /vinculos`                             | Períodos, alterações e histórico                    |
 | Contratos    | `GET /contratos`                            | Modelos, vigência e valores                         |
