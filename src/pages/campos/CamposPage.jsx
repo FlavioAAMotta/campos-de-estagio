@@ -7,13 +7,11 @@ import { Field, SelectField } from '../../components/ui/Field.jsx';
 import { routes } from '../../constants/routes.js';
 
 const columns = [
-  { key: 'nome', label: 'Campo' },
-  { key: 'regiao', label: 'Região' },
-  { key: 'relacionamento', label: 'Relacionamento' },
-  { key: 'capacidade', label: 'Vagas (soma dos consultórios)' },
-  { key: 'custo', label: 'Custo/mês' },
-  { key: 'score', label: 'Score' },
-  { key: 'status', label: 'Status' },
+  { key: 'nome', label: 'Nome' },
+  { key: 'endereco', label: 'Endereço' },
+  { key: 'classificacao', label: 'Classificação' },
+  { key: 'municipio', label: 'Município' },
+  { key: 'consultorios', label: 'Consultórios' },
 ];
 
 export default function CamposPage() {
@@ -21,15 +19,14 @@ export default function CamposPage() {
     <div className="stack">
       <FilterBar>
         <Field label="Buscar" placeholder="Nome do campo…" />
-        <SelectField label="Especialidade" options={['Todas']} />
-        <SelectField label="Relacionamento" options={['Todos']} />
-        <SelectField label="Status" options={['Todos']} />
+        <SelectField label="Município" options={['Todos']} />
+        <SelectField label="Classificação" options={['Todas']} />
         <PendingButton>Aplicar</PendingButton>
         <PendingButton variant="secondary">Limpar</PendingButton>
       </FilterBar>
       <Card
         title="Campos de Estágio"
-        description="— registros"
+        description="0 registros"
         action={<PendingButton>Novo Campo</PendingButton>}
       >
         <DataTable
