@@ -7,6 +7,7 @@ import PainelPage from './pages/painel/PainelPage.jsx';
 import CamposPage from './pages/campos/CamposPage.jsx';
 import CampoPage from './pages/campos/CampoPage.jsx';
 import ConsultoriosPage from './pages/consultorios/ConsultoriosPage.jsx';
+import AlocacoesPage from './pages/alocacoes/AlocacoesPage.jsx';
 import PreceptoresPage from './pages/preceptores/PreceptoresPage.jsx';
 import PreceptorPage from './pages/preceptores/PreceptorPage.jsx';
 import VinculosPage from './pages/vinculos/VinculosPage.jsx';
@@ -33,6 +34,7 @@ export default function App() {
             <Route path={routes.preceptorExemplo} element={<PreceptorPage />} />
             <Route path={routes.vinculos} element={<VinculosPage />} />
             <Route path={routes.contratos} element={<ContratosPage />} />
+            <Route path={routes.alocacoes} element={<AlocacoesPage />} />
             <Route path={routes.distribuicao} element={<DistribuicaoPage />} />
             <Route path={routes.simulador} element={<SimuladorPage />} />
             <Route path={routes.mapa} element={<MapaPage />} />

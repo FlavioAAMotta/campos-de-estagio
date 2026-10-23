@@ -34,3 +34,22 @@ export const simulationMetrics = [
   'Score médio',
   'Cobertura de demanda',
 ];
+
+// Classificações de ocupação descritas no contrato comum. Os limites vêm das faixas da API.
+export const occupancyClasses = [
+  {
+    code: 'IDEAL',
+    tone: 'success',
+    description: 'Dentro da faixa ideal. A alocação segue sem alerta.',
+  },
+  {
+    code: 'ACEITAVEL',
+    tone: 'warning',
+    description: 'Acima do ideal, mas permitida. A alocação é sinalizada.',
+  },
+  {
+    code: 'INACEITAVEL',
+    tone: 'danger',
+    description: 'Acima do máximo aceitável. A API bloqueia com erro 400.',
+  },
+];

@@ -9,6 +9,7 @@ export const routes = {
   preceptorExemplo: '/preceptores/exemplo',
   vinculos: '/vinculos',
   contratos: '/contratos',
+  alocacoes: '/alocacoes',
   distribuicao: '/distribuicao',
   simulador: '/simulador',
   avaliacoes: '/avaliacoes',
@@ -35,6 +36,7 @@ export const navigation = [
   {
     title: 'Operação',
     items: [
+      { to: routes.alocacoes, label: 'Alunos e Alocações' },
       { to: routes.distribuicao, label: 'Distribuição por Especialidade' },
       { to: routes.simulador, label: 'Simulador de Cenários' },
       { to: routes.avaliacoes, label: 'Avaliações' },
