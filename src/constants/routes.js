@@ -11,6 +11,7 @@ export const routes = {
   contratos: '/contratos',
   alocacoes: '/alocacoes',
   faixas: '/faixas',
+  importacoes: '/importacoes',
   distribuicao: '/distribuicao',
   simulador: '/simulador',
   avaliacoes: '/avaliacoes',
@@ -39,6 +40,7 @@ export const navigation = [
     items: [
       { to: routes.alocacoes, label: 'Alunos e Alocações' },
       { to: routes.faixas, label: 'Faixas de Ocupação' },
+      { to: routes.importacoes, label: 'Importação' },
       { to: routes.distribuicao, label: 'Distribuição por Especialidade' },
       { to: routes.simulador, label: 'Simulador de Cenários' },
       { to: routes.avaliacoes, label: 'Avaliações' },

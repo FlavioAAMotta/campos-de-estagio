@@ -53,3 +53,35 @@ export const occupancyClasses = [
     description: 'Acima do máximo aceitável. A API bloqueia com erro 400.',
   },
 ];
+
+// Códigos de erro por linha da importação, conforme o contrato comum.
+export const importErrorCodes = [
+  {
+    id: 'CAMPO_OBRIGATORIO',
+    explicacao: 'Um campo exigido está vazio ou ausente na linha.',
+  },
+  {
+    id: 'TIPO_INVALIDO',
+    explicacao: 'O valor não tem o tipo esperado, como texto em vez de número.',
+  },
+  {
+    id: 'CAPACIDADE_INVALIDA',
+    explicacao: 'A capacidade mínima é maior que a máxima ou é negativa.',
+  },
+  {
+    id: 'MUNICIPIO_INEXISTENTE',
+    explicacao: 'O município informado não existe na lista da API.',
+  },
+  {
+    id: 'ESPECIALIDADE_INEXISTENTE',
+    explicacao: 'A especialidade informada não existe na lista da API.',
+  },
+  {
+    id: 'LINHA_DUPLICADA',
+    explicacao: 'A mesma linha aparece mais de uma vez no lote enviado.',
+  },
+  {
+    id: 'CONSULTORIO_JA_CADASTRADO',
+    explicacao: 'O consultório já existe no campo informado.',
+  },
+];
