@@ -6,6 +6,21 @@ O visual parte do protótipo da Coordenação de Medicina da FAMINAS.
 O objetivo é começar com as telas organizadas e concentrar o trabalho da equipe
 na construção da API. O projeto abre sem backend, sem banco de dados e sem credenciais.
 
+## Uso nas entregas
+
+Este frontend é **opcional**. Cada grupo pode construir o seu próprio ou fazer
+um fork desta base. O contrato da API é comum a todos os grupos; as telas
+abaixo já existem para ele:
+
+- Campos, consultórios, alunos e alocações (com a legenda IDEAL, ACEITAVEL e
+  INACEITAVEL), faixas de ocupação e importação com staging.
+- Entrada com os papéis ADMIN e CONSULTA.
+
+As demais telas (painel, mapa, preceptores, vínculos, contratos, distribuição,
+simulador e avaliações) são **extras**: o grupo escolhe se implementa e
+documenta o que fizer. O mapeamento de cada tela para as rotas da API está em
+[docs/integracao-api.md](docs/integracao-api.md).
+
 ## Começar
 
 1. Faça um **fork** deste repositório no GitHub.
@@ -28,7 +43,9 @@ e siga o [guia de integração](docs/integracao-api.md).
 ## O que vem pronto
 
 - Navegação por URL, menu responsivo e página de endereço não encontrado.
-- Painel, mapa, campos, preceptores, vínculos, contratos, distribuição,
+- Telas do contrato comum: campos, consultórios, alunos e alocações, faixas de
+  ocupação e importação com staging.
+- Telas extras: painel, mapa, preceptores, vínculos, contratos, distribuição,
   simulador, avaliações e fichas de exemplo.
 - Componentes de botão, formulário, cartão, tabela e estado vazio.
 - Fontes, imagens e cores locais, preservando a identidade do protótipo.
